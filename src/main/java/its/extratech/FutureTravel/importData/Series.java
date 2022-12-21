@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -37,44 +38,6 @@ public class Series {
                 "\n\t\tValore osservato: " + obsList.get(2).getValue();
     }
 
-    public List<Record> toRecordList() {
-        Provincia provincia = new Provincia();
-        provincia.setId(seriesKey.getCodiceProvincia());
 
-        ResidenzaClienti residenzaClienti = new ResidenzaClienti();
-        residenzaClienti.setId(seriesKey.getResidenzaClienti());
-
-        TipoAlloggio tipoAlloggio = new TipoAlloggio();
-        tipoAlloggio.setId(seriesKey.getTipoAlloggio());
-
-        Contesto contesto = new Contesto();
-        contesto.setProvincia(provincia);
-        contesto.setResidenzaClienti(residenzaClienti);
-        contesto.setTipoAlloggio(tipoAlloggio);
-
-        Record record = new Record();
-        List<Record> recordList = new ArrayList<>();
-
-        for (Obs obs : obsList) {
-            record.setContesto(contesto);
-            record.setTime(obs.getMese());
-
-
-            int value = Integer.parseInt(obs.getValue());
-
-            if (seriesKey.getIndicatore() == "NI") {
-                record.setPresenze(value);
-            } else {
-                record.setArrivi(value);
-            }
-
-            recordList.add(record);
-
-
-        }
-
-        return recordList;
-
-    }
 
 }

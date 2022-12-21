@@ -30,6 +30,7 @@ public class XMLIstatReader {
     public static ArrayList<String> residenzeClienti;
     public static ArrayList<String> indicatori;
     public static ArrayList<String> tipologieEsercizi;
+    public static ImportDataUtils importDataUtils;
 
     static {
         province = new ArrayList<>();
@@ -50,59 +51,54 @@ public class XMLIstatReader {
         tipologieEsercizi = new ArrayList<>();
         tipologieEsercizi.add("HOTELLIKE");
         tipologieEsercizi.add("OTHER");
+
+        importDataUtils = new ImportDataUtils();
     }
 
 
-    public List<Record> fetch() {
+    public List<Record> fetch() throws IOException, InterruptedException {
 
         Document documentPresenze;
         Document documentArrivi;
-        List<Series> arriviSeriesList;
-        List<Series> presenzeSeriesList;
+        Series arriviSeries;
+        Series presenzeSeries;
 
         List<Record> finalRecordList = new ArrayList<>();
-        int i = 0;
+        List<Record> tempRecordList;
+
         for (String provincia : province) {
             for (String tipologiaEsercizio : tipologieEsercizi){
                 for (String residenzaClienti : residenzeClienti){
-                    documentPresenze = fetchIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "");
-                    documentArrivi = fetchIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "");
-                    i += 2;
 
-                    arriviSeriesList = getSeries(documentArrivi);
-                    System.out.println(arriviSeriesList.get(0).toString());
-                    presenzeSeriesList = getSeries(documentPresenze);
-                    System.out.println(presenzeSeriesList.get(0).toString());
+                    // eseguo la chiamata all'API istat, con i valori di questo ciclo; ne eseguo una per gli ARRIVI e una per le PRESENZE
+                    // costruisco un URL e lo passo al metodo che effettua la chiamata, questo mi restituisce una stringa
+                    // che poi trasformo in un Document per poterlo spacchettare
+                    documentPresenze = importDataUtils.
+                                            fromStringToXMLDocument(
+                                            fetchIstatApi(
+                                                    createUrlForIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "")));
+                    documentArrivi = importDataUtils.
+                                            fromStringToXMLDocument(
+                                            fetchIstatApi(
+                                                    createUrlForIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "")));
 
-                    List<Record> arriviRecordList = new ArrayList<>();
-                    List<Record> presenzeRecordList = new ArrayList<>();
+                    // trasformo i Document in Series, oggetti che ricalcano il modo in cui è costruito
+                    // l'XML che l'API Istat mi ha restituito
+                    arriviSeries = getSeries(documentArrivi).get(0);
+                    presenzeSeries = getSeries(documentPresenze).get(0);
 
-                    for(Series s : arriviSeriesList){
-                        arriviRecordList = s.toRecordList();
-                        System.out.println("Record arrivi fetchati: " + arriviRecordList.size());
+                    // Trasformo le Series in oggetti Record così poi li potrò salvare sul DB,
+                    // ma prima devo unire i record che hanno lo stesso contesto (ore ho due record, uno per
+                    // le presenze e uno per gli arrivi, ne voglio uno solo con i due campi popolati)
+                    tempRecordList = this.mixRecordListWithSameContesto(
+                            importDataUtils.fromSeriesToRecordList(arriviSeries),
+                            importDataUtils.fromSeriesToRecordList(presenzeSeries));
+
+                    // Aggiungo i Record di questo ciclo al listone che poi restituirò
+                    Iterator<Record> tempRecordListIterator = tempRecordList.listIterator();
+                    while(tempRecordListIterator.hasNext()){
+                        finalRecordList.add(tempRecordListIterator.next());
                     }
-
-                    for(Series s : presenzeSeriesList){
-                        presenzeRecordList = s.toRecordList();
-                        System.out.println("Record presenze fetchati:" + presenzeRecordList.size());
-                    }
-
-                    for(Record recordArrivi : arriviRecordList){
-                        boolean flag = false;
-                        Iterator<Record> recordIterator = presenzeRecordList.listIterator();
-
-                        while((!flag) && (recordIterator.hasNext())){
-                            Record r = recordIterator.next();
-                            System.out.println(r.getTime() + "\t" + recordArrivi.getTime());
-                            if(Objects.equals(r.getTime(), recordArrivi.getTime())){
-                                System.out.println("Sono uguali");
-                                recordArrivi.setPresenze(r.getPresenze());
-                                flag = true;
-                                finalRecordList.add(recordArrivi);
-                            }
-                        }
-                    }
-
 
                     System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
@@ -113,7 +109,43 @@ public class XMLIstatReader {
 
     }
 
-    public Document fetchIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString) {
+    public List<Record> mixRecordListWithSameContesto(List<Record> arriviRecordList, List<Record> presenzeRecordList){
+        List<Record> finalRecordList = new ArrayList<>();
+
+        for(Record recordArrivi : arriviRecordList){
+            boolean flag = false;
+            Iterator<Record> recordIterator = presenzeRecordList.listIterator();
+
+            while((!flag) && (recordIterator.hasNext())){
+                Record r = recordIterator.next();
+
+                if(Objects.equals(r.getTime(), recordArrivi.getTime())){
+                    recordArrivi.setPresenze(r.getPresenze());
+                    flag = true;
+                    finalRecordList.add(recordArrivi);
+                }
+            }
+            if(!flag){
+                finalRecordList.add(recordArrivi);
+            }
+        }
+
+        for(Record recordPresenze : presenzeRecordList){
+            boolean flag = false;
+            for(Record recordArrivi : arriviRecordList){
+                if(Objects.equals(recordPresenze.getTime(), recordArrivi.getTime())){
+                    flag = true;
+                }
+            }
+            if(!flag){
+                finalRecordList.add(recordPresenze);
+            }
+        }
+
+        return finalRecordList;
+    }
+
+    public String createUrlForIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString){
         String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/";
         url += "M" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
         url += "551_553" + "."; // codice ATECO_2007 che identifica le strutture ricettive
@@ -126,15 +158,17 @@ public class XMLIstatReader {
         url += ".."; // grado urbanizzazione, località costiera
         url += "/?" + queryString;
 
-        Document doc = null;
+        return url;
+    }
 
-        try {
-            // set HttpClient
+    public String fetchIstatApi(String url) {
+
+            // setto l'HttpClient
             HttpClient client = HttpClient.newBuilder()
                     .followRedirects(HttpClient.Redirect.NORMAL)
                     .build();
 
-            // set HttpRequest
+            // setto l'HttpRequest
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .timeout(Duration.ofMinutes(2))
@@ -145,38 +179,18 @@ public class XMLIstatReader {
             // DEBUG
             System.out.println(url);
 
-            // execute
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // mi appoggio a un file per creare un oggetto Document dalla stringa che ho ricevuto
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/tmp/file.xml"));
-            writer.write(response.body());
-            writer.close();
-
-            try{
-                File xmlFile = new File("src/main/resources/tmp/file.xml");
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                doc = builder.parse(xmlFile);
-            } catch (ParserConfigurationException e){
-                System.out.println("ParserConfigurationException: " + e);
-            } catch (IOException e){
-                System.out.println("IOException: " + e);
-            } catch (SAXException e){
-                System.out.println("SAXException: " + e);
-            }
-
-        } catch (MalformedURLException e){
-            e.printStackTrace();
+            // eseguo la richiesta HTTP
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return doc;
-    }
 
+        return response.body();
+    }
 
     public List<Series> getSeries(Document doc){
         NodeList seriesNodeList = doc.getElementsByTagName("generic:Series");
