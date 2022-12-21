@@ -18,6 +18,7 @@ import java.util.Set;
 public class Record {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     public long id;
 
@@ -26,7 +27,7 @@ public class Record {
     public Contesto contesto;
 
     @Column(name = "TIME")
-    public int time;
+    public String time;
 
     @Column(name = "PRESENZE")
     public int presenze;
