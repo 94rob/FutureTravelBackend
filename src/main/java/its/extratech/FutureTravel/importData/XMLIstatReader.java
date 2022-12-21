@@ -22,7 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Stream;
+
 
 public class XMLIstatReader {
 
@@ -53,12 +53,12 @@ public class XMLIstatReader {
     }
 
 
-    public static void main(String[] args) {
+    public List<Record> fetch() {
 
-        Document documentPresenze = null;
-        Document documentArrivi = null;
-        List<Series> arriviSeriesList = new ArrayList<>();
-        List<Series> presenzeSeriesList = new ArrayList<>();
+        Document documentPresenze;
+        Document documentArrivi;
+        List<Series> arriviSeriesList;
+        List<Series> presenzeSeriesList;
 
         List<Record> finalRecordList = new ArrayList<>();
         int i = 0;
@@ -70,39 +70,50 @@ public class XMLIstatReader {
                     i += 2;
 
                     arriviSeriesList = getSeries(documentArrivi);
+                    System.out.println(arriviSeriesList.get(0).toString());
                     presenzeSeriesList = getSeries(documentPresenze);
+                    System.out.println(presenzeSeriesList.get(0).toString());
 
                     List<Record> arriviRecordList = new ArrayList<>();
                     List<Record> presenzeRecordList = new ArrayList<>();
 
                     for(Series s : arriviSeriesList){
                         arriviRecordList = s.toRecordList();
+                        System.out.println("Record arrivi fetchati: " + arriviRecordList.size());
                     }
 
                     for(Series s : presenzeSeriesList){
                         presenzeRecordList = s.toRecordList();
+                        System.out.println("Record presenze fetchati:" + presenzeRecordList.size());
                     }
 
                     for(Record recordArrivi : arriviRecordList){
-                        for (Record recordPresenze : presenzeRecordList){
-                            if((recordPresenze.getContesto().isEqualsTo(recordPresenze.getContesto())) &&
-                                    (recordPresenze.getTime() == recordPresenze.getTime())){
-                                recordArrivi.setPresenze(recordPresenze.getPresenze());
+                        boolean flag = false;
+                        Iterator<Record> recordIterator = presenzeRecordList.listIterator();
+
+                        while((!flag) && (recordIterator.hasNext())){
+                            Record r = recordIterator.next();
+                            System.out.println(r.getTime() + "\t" + recordArrivi.getTime());
+                            if(Objects.equals(r.getTime(), recordArrivi.getTime())){
+                                System.out.println("Sono uguali");
+                                recordArrivi.setPresenze(r.getPresenze());
+                                flag = true;
                                 finalRecordList.add(recordArrivi);
                             }
                         }
                     }
+
+
+                    System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
             }
         }
-        System.out.println("Chiamate: " + i);
-        System.out.println("Lista di record: " + finalRecordList.size());
-
-
+        System.out.println("Finito di fetchare\nN° di record: " + finalRecordList.size());
+        return finalRecordList;
 
     }
 
-    public static Document fetchIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString) {
+    public Document fetchIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString) {
         String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/";
         url += "M" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
         url += "551_553" + "."; // codice ATECO_2007 che identifica le strutture ricettive
@@ -167,7 +178,7 @@ public class XMLIstatReader {
     }
 
 
-    public static List<Series> getSeries(Document doc){
+    public List<Series> getSeries(Document doc){
         NodeList seriesNodeList = doc.getElementsByTagName("generic:Series");
 
         List<Series> series = new ArrayList<>();

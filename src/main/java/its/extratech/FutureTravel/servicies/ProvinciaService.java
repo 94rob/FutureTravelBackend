@@ -16,4 +16,8 @@ public class ProvinciaService {
         Provincia provincia = this.provinciaRepository.findByNomeProvincia(nomeProvincia);
         return new ProvinciaDto(provincia.getId(), provincia.getNomeProvincia());
     }
+
+    public Provincia findById(String id){
+        return this.provinciaRepository.findById(id).get();
+    }
 }

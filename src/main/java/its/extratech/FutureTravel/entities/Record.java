@@ -34,4 +34,15 @@ public class Record {
 
     @Column(name = "ARRIVI")
     public int arrivi;
+
+    @Override
+    public String toString(){
+        return "Contesto: " +
+                "   \n\tId provincia: " + this.contesto.getProvincia().getId() +
+                "   \n\tId tipo alloggio: " + this.contesto.getTipoAlloggio().getId() +
+                "   \n\tId residenza clienti: " + this.contesto.getResidenzaClienti().getId() +
+                "\n Mese: " + this.getTime() +
+                "\n Presenze: " + this.getPresenze() +
+                "\n Arrivi: " + this.getArrivi();
+    }
 }
