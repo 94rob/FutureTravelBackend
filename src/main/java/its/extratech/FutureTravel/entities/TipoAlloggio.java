@@ -1,13 +1,12 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,8 +17,12 @@ import lombok.Setter;
 public class TipoAlloggio {
 
     @Id
+    @Column(name = "ID")
     public long id;
 
     @Column(name = "DESCRIZIONE")
     public String descrizione;
+
+    @OneToMany(mappedBy = "tipoAlloggio", fetch = FetchType.LAZY)
+    public List<Contesto> contestoList;
 }

@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class SeriesKey {
-    public String territorio;
-    public String tipoDato;
+    public String codiceProvincia;
+    public String indicatore;
     public String tipoAlloggio;
-    public String provenienzaClienti;
+    public String residenzaClienti;
 }

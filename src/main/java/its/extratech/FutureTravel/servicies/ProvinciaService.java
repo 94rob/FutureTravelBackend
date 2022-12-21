@@ -1,5 +1,6 @@
 package its.extratech.FutureTravel.servicies;
 
+import its.extratech.FutureTravel.dtos.ProvinciaDto;
 import its.extratech.FutureTravel.entities.Provincia;
 import its.extratech.FutureTravel.repositories.ProvinciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,8 @@ public class ProvinciaService {
     @Autowired
     ProvinciaRepository provinciaRepository;
 
-    public Provincia findByNomeProvincia(String nomeProvincia){
-        return this.provinciaRepository.findByNomeProvincia(nomeProvincia);
+    public ProvinciaDto findByNomeProvincia(String nomeProvincia){
+        Provincia provincia = this.provinciaRepository.findByNomeProvincia(nomeProvincia);
+        return new ProvinciaDto(provincia.getId(), provincia.getNomeProvincia());
     }
 }
