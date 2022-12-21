@@ -13,16 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 public class Series {
     public SeriesKey seriesKey;
-    public String timeFormat;
     public List<Obs> obsList;
 
     @Override
     public String toString(){
         return "SeriesKey: " +
-                    "\n\tTerritorio: " + seriesKey.getTerritorio() +
-                    "\n\tTipo dato: " + seriesKey.getTipoDato() +
+                    "\n\tTerritorio: " + seriesKey.getCodiceProvincia() +
+                    "\n\tTipo dato: " + seriesKey.getIndicatore() +
                     "\n\tTipo alloggio: " + seriesKey.getTipoAlloggio() +
-                    "\n\tProvenienza clienti: " + seriesKey.getProvenienzaClienti() +
+                    "\n\tProvenienza clienti: " + seriesKey.getResidenzaClienti() +
                 "\nObs (prime tre): " +
                     "\n\tPrima osservazione: " +
                         "\n\t\tPeriodo: " + obsList.get(0).getMese() +

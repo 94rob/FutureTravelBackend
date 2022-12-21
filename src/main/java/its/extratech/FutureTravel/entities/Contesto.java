@@ -1,13 +1,12 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -17,12 +16,19 @@ public class Contesto {
     @Id
     public long id;
 
-    @Column (name = "TERRITORIO")
+    @JoinColumn(name = "TERRITORIO", referencedColumnName = "ID")
+    @ManyToOne
     public Provincia provincia;
 
-    @Column (name = "TIPO_ALLOGGIO")
+    @JoinColumn (name = "TIPO_ALLOGGIO", referencedColumnName = "ID")
+    @ManyToOne
     public TipoAlloggio tipoAlloggio;
 
-    @Column (name = "RESIDENZA_CLIENTI")
+    @JoinColumn (name = "RESIDENZA_CLIENTI", referencedColumnName = "ID")
+    @ManyToOne
     public ResidenzaClienti residenzaClienti;
+
+    @OneToMany(mappedBy = "contesto", fetch = FetchType.LAZY)
+    public List<Record> records;
+
 }

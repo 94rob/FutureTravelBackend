@@ -1,13 +1,13 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,9 +18,11 @@ import lombok.Setter;
 public class Record {
 
     @Id
+    @Column(name = "ID")
     public long id;
 
-    @Column(name = "CONTESTO")
+    @JoinColumn (name = "CONTESTO", referencedColumnName = "ID")
+    @ManyToOne
     public Contesto contesto;
 
     @Column(name = "TIME")

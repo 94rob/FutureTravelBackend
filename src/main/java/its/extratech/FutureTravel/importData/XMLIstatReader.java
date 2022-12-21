@@ -5,7 +5,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
@@ -15,7 +14,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -24,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class XMLIstatReader {
 
@@ -38,16 +37,50 @@ public class XMLIstatReader {
     }
 
     public static void main(String[] args) {
-        Document doc = fetchIstatApi("IT", "ITF3", "NI", "ALL", "");
 
-        try{
-            List<Series> series = getSeries(doc);
+        ArrayList<String> province = new ArrayList<>();
+        province.add("ITF31");
+        province.add("ITF32");
+        province.add("ITF33");
+        province.add("ITF34");
+        province.add("ITF35");
 
-            System.out.println(series.get(0).toString());
+        ArrayList<String> residenzeClienti = new ArrayList<>();
+        residenzeClienti.add("IT");
+        residenzeClienti.add("WRL_X_ITA");
 
-        } catch(NullPointerException e){
-            e.printStackTrace();
+        ArrayList<String> indicatori = new ArrayList<>();
+        indicatori.add("NI");
+        indicatori.add("AR");
+
+        ArrayList<String> tipologieEsercizi = new ArrayList<>();
+        tipologieEsercizi.add("HOTELLIKE");
+        tipologieEsercizi.add("OTHER");
+
+        Document document = null;
+        List<Series> tempSeriesList = new ArrayList<>();
+        List<Series> seriesList = new ArrayList<>();
+        int i = 0;
+        for (String provincia : province) {
+            for (String tipologiaEsercizio : tipologieEsercizi){
+                for (String residenzaClienti : residenzeClienti){
+                    for (String indicatore : indicatori){
+                        document = fetchIstatApi(residenzaClienti, provincia, indicatore, tipologiaEsercizio, "");
+                        i++;
+                        try{
+                            tempSeriesList = getSeries(document);
+                            seriesList = Stream.concat(seriesList.stream(), tempSeriesList.stream()).toList();
+
+                        } catch (NullPointerException e){
+                            e.printStackTrace();
+                            break;
+                        }
+                    }
+                }
+            }
         }
+        System.out.println("Chiamate: " + i);
+        System.out.println("Lista di series: " + seriesList.size());
 
     }
 
@@ -80,10 +113,13 @@ public class XMLIstatReader {
                     .GET()
                     .build();
 
+            // DEBUG
+            System.out.println(url);
+
             // execute
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // prove
+            // mi appoggio a un file per creare un oggetto Document dalla stringa che ho ricevuto
 
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/tmp/file.xml"));
             writer.write(response.body());
@@ -150,10 +186,10 @@ public class XMLIstatReader {
                     }
 
                     // popolo la SeriesKey con i valori presi dagli attributi dei Value
-                    sk.setTerritorio(valuesElementList.get(4).getAttribute("value")); // ITTER107
-                    sk.setTipoDato(valuesElementList.get(7).getAttribute("value")); // INDS (AR o NI)
+                    sk.setCodiceProvincia(valuesElementList.get(4).getAttribute("value")); // ITTER107
+                    sk.setIndicatore(valuesElementList.get(7).getAttribute("value")); // INDS (AR o NI)
                     sk.setTipoAlloggio(valuesElementList.get(6).getAttribute("value")); // TIPO_ESERCIZIO
-                    sk.setProvenienzaClienti(valuesElementList.get(3).getAttribute("value")); // RES_CLIENTI
+                    sk.setResidenzaClienti(valuesElementList.get(3).getAttribute("value")); // RES_CLIENTI
 
                     s.setSeriesKey(sk);
 
@@ -176,8 +212,14 @@ public class XMLIstatReader {
 
                             // Setto il valore
                             Node valueNode = currentObsElement.getElementsByTagName("generic:ObsValue").item(0);
-                            String value = ((Element) valueNode).getAttribute("value");
-                            obs.setValue(value);
+                            try{
+                                String value = ((Element) valueNode).getAttribute("value");
+                                obs.setValue(value);
+                            } catch (NullPointerException e){
+                                System.out.println("Valore assente");
+                                continue;
+                            }
+
 
                             obsList.add(obs);
                         }

@@ -1,13 +1,14 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,9 +19,13 @@ import lombok.Setter;
 public class Provincia {
 
     @Id
-    public long id;
+    @Column (name = "ID")
+    public String id;
 
     @Column(name = "NOME_PROVINCIA")
     public String nomeProvincia;
+
+    @OneToMany(mappedBy = "provincia", fetch = FetchType.LAZY)
+    private List<Contesto> contesti;
 
 }
