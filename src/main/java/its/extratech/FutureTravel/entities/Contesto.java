@@ -14,6 +14,7 @@ import java.util.List;
 public class Contesto {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
     @JoinColumn(name = "TERRITORIO", referencedColumnName = "ID")
@@ -30,5 +31,12 @@ public class Contesto {
 
     @OneToMany(mappedBy = "contesto", fetch = FetchType.LAZY)
     public List<Record> records;
+
+    public boolean isEqualsTo(Contesto c){
+        return ((c.getProvincia().getId() == provincia.getId()) &&
+                (c.getResidenzaClienti().getId() == residenzaClienti.getId()) &&
+                (c.getTipoAlloggio().getId() == tipoAlloggio.getId()));
+
+    }
 
 }

@@ -1,6 +1,9 @@
 package its.extratech.FutureTravel.importData;
 
 
+import its.extratech.FutureTravel.entities.Record;
+import its.extratech.FutureTravel.servicies.RecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,69 +21,84 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class XMLIstatReader {
 
-    public static Map<String, String> articleMapOne;
+    public static ArrayList<String> province;
+    public static ArrayList<String> residenzeClienti;
+    public static ArrayList<String> indicatori;
+    public static ArrayList<String> tipologieEsercizi;
+
     static {
-        articleMapOne = new HashMap<>();
-        articleMapOne.put("Caserta", "ITF31");
-        articleMapOne.put("Benevento", "ITF32");
-        articleMapOne.put("Napoli", "ITF33");
-        articleMapOne.put("Avellino", "ITF34");
-        articleMapOne.put("Salerno", "ITF35");
-    }
-
-    public static void main(String[] args) {
-
-        ArrayList<String> province = new ArrayList<>();
+        province = new ArrayList<>();
         province.add("ITF31");
         province.add("ITF32");
         province.add("ITF33");
         province.add("ITF34");
         province.add("ITF35");
 
-        ArrayList<String> residenzeClienti = new ArrayList<>();
+        residenzeClienti = new ArrayList<>();
         residenzeClienti.add("IT");
         residenzeClienti.add("WRL_X_ITA");
 
-        ArrayList<String> indicatori = new ArrayList<>();
+        indicatori = new ArrayList<>();
         indicatori.add("NI");
         indicatori.add("AR");
 
-        ArrayList<String> tipologieEsercizi = new ArrayList<>();
+        tipologieEsercizi = new ArrayList<>();
         tipologieEsercizi.add("HOTELLIKE");
         tipologieEsercizi.add("OTHER");
+    }
 
-        Document document = null;
-        List<Series> tempSeriesList = new ArrayList<>();
-        List<Series> seriesList = new ArrayList<>();
+
+    public static void main(String[] args) {
+
+        Document documentPresenze = null;
+        Document documentArrivi = null;
+        List<Series> arriviSeriesList = new ArrayList<>();
+        List<Series> presenzeSeriesList = new ArrayList<>();
+
+        List<Record> finalRecordList = new ArrayList<>();
         int i = 0;
         for (String provincia : province) {
             for (String tipologiaEsercizio : tipologieEsercizi){
                 for (String residenzaClienti : residenzeClienti){
-                    for (String indicatore : indicatori){
-                        document = fetchIstatApi(residenzaClienti, provincia, indicatore, tipologiaEsercizio, "");
-                        i++;
-                        try{
-                            tempSeriesList = getSeries(document);
-                            seriesList = Stream.concat(seriesList.stream(), tempSeriesList.stream()).toList();
+                    documentPresenze = fetchIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "");
+                    documentArrivi = fetchIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "");
+                    i += 2;
 
-                        } catch (NullPointerException e){
-                            e.printStackTrace();
-                            break;
+                    arriviSeriesList = getSeries(documentArrivi);
+                    presenzeSeriesList = getSeries(documentPresenze);
+
+                    List<Record> arriviRecordList = new ArrayList<>();
+                    List<Record> presenzeRecordList = new ArrayList<>();
+
+                    for(Series s : arriviSeriesList){
+                        arriviRecordList = s.toRecordList();
+                    }
+
+                    for(Series s : presenzeSeriesList){
+                        presenzeRecordList = s.toRecordList();
+                    }
+
+                    for(Record recordArrivi : arriviRecordList){
+                        for (Record recordPresenze : presenzeRecordList){
+                            if((recordPresenze.getContesto().isEqualsTo(recordPresenze.getContesto())) &&
+                                    (recordPresenze.getTime() == recordPresenze.getTime())){
+                                recordArrivi.setPresenze(recordPresenze.getPresenze());
+                                finalRecordList.add(recordArrivi);
+                            }
                         }
                     }
                 }
             }
         }
         System.out.println("Chiamate: " + i);
-        System.out.println("Lista di series: " + seriesList.size());
+        System.out.println("Lista di record: " + finalRecordList.size());
+
+
 
     }
 

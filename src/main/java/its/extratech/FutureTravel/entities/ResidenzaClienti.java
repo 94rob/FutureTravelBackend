@@ -19,7 +19,7 @@ public class ResidenzaClienti {
 
     @Id
     @Column(name = "ID")
-    public long id;
+    public String id;
 
     @Column(name = "DESCRIZIONE")
     public String descrizione;
