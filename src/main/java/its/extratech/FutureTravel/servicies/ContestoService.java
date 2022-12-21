@@ -21,4 +21,5 @@ public class ContestoService {
     public Contesto findByProvinciaAndTipoAlloggioAndResidenzaClienti(Provincia provincia, TipoAlloggio tipoAlloggio, ResidenzaClienti residenzaClienti){
         return this.contestoRepository.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti).get(0);
     }
+
 }
