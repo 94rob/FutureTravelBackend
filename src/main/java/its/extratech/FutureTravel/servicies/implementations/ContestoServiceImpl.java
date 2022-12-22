@@ -1,4 +1,4 @@
-package its.extratech.FutureTravel.servicies;
+package its.extratech.FutureTravel.servicies.implementations;
 
 import its.extratech.FutureTravel.entities.Contesto;
 import its.extratech.FutureTravel.entities.Provincia;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ContestoService {
+public class ContestoServiceImpl {
 
     @Autowired
     ContestoRepository contestoRepository;

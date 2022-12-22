@@ -15,9 +15,10 @@ public class Contesto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_CONTESTO")
     public long id;
 
-    @JoinColumn(name = "TERRITORIO", referencedColumnName = "ID")
+    @JoinColumn(name = "TERRITORIO", referencedColumnName = "ID_PROVINCIA")
     @ManyToOne
     public Provincia provincia;
 

@@ -19,7 +19,7 @@ import java.util.Set;
 public class Provincia {
 
     @Id
-    @Column (name = "ID")
+    @Column (name = "ID_PROVINCIA")
     public String id;
 
     @Column(name = "NOME_PROVINCIA")

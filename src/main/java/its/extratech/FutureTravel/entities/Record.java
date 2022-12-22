@@ -22,7 +22,7 @@ public class Record {
     @Column(name = "ID")
     public long id;
 
-    @JoinColumn (name = "CONTESTO", referencedColumnName = "ID")
+    @JoinColumn (name = "CONTESTO", referencedColumnName = "ID_CONTESTO")
     @ManyToOne
     public Contesto contesto;
 
