@@ -10,9 +10,9 @@ spring:
       mode: always
       platform: mariadb
   datasource:
-    password: 87!tyIlp?1
+    password: futuretravel
     url: jdbc:mariadb://18.102.24.178:3306/Future_Travel
-    username: root
+    username: futuretravel
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
@@ -22,5 +22,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
     show-sql: true
-
+    open-in-view: true
