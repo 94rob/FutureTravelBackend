@@ -2,7 +2,7 @@ package its.extratech.FutureTravel.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import its.extratech.FutureTravel.dtos.RecordFrontEndDto;
+import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,18 +19,20 @@ import java.util.List;
 public class RecordController {
 
     @Autowired
-    RecordServiceImpl recordServiceImpl;
+    private RecordServiceImpl recordServiceImpl;
 
-    @GetMapping("/fetch/NON_CHIAMARE_ALTRIMENTI_DUPLICA_I_DATI_NEL_DATABASE")
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @GetMapping("/fetch")
     public ResponseEntity<?> fetch(){
-        String s = recordServiceImpl.fetch();
-        return new ResponseEntity<String>(s, HttpStatus.OK);
+        // String s = recordServiceImpl.fetch(); Serve per fetchare e inserire i dati istat nel db
+        return new ResponseEntity<String>("", HttpStatus.OK);
     }
 
     @GetMapping("/cerca")
     public ResponseEntity<?> returnRecordByProvincia(@RequestParam(name="provincia") String nomeProvincia) throws JsonProcessingException {
-        List<RecordFrontEndDto> recordFrontEndDtoList = this.recordServiceImpl.findByNomeProvincia(nomeProvincia);
-        ObjectMapper objectMapper = new ObjectMapper();
-        return new ResponseEntity<String>(objectMapper.writeValueAsString(recordFrontEndDtoList), HttpStatus.OK);
+        List<RecordDtoCompleto> recordDtoCompletoList = this.recordServiceImpl.selByNomeProvincia(nomeProvincia);
+        return new ResponseEntity<String>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 }

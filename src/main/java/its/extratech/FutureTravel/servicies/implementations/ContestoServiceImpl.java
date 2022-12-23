@@ -8,6 +8,8 @@ import its.extratech.FutureTravel.repositories.ContestoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ContestoServiceImpl {
 
@@ -20,6 +22,10 @@ public class ContestoServiceImpl {
 
     public Contesto findByProvinciaAndTipoAlloggioAndResidenzaClienti(Provincia provincia, TipoAlloggio tipoAlloggio, ResidenzaClienti residenzaClienti){
         return this.contestoRepository.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti).get(0);
+    }
+
+    public List<Contesto> findByTipoAlloggio(TipoAlloggio tipoAlloggio){
+        return this.contestoRepository.findByTipoAlloggio(tipoAlloggio);
     }
 
 }

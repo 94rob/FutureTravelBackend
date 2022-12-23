@@ -16,5 +16,5 @@ public interface ContestoRepository extends JpaRepository<Contesto, Long> {
 
     List<Contesto> findByProvinciaAndTipoAlloggioAndResidenzaClienti(Provincia provincia, TipoAlloggio tipoAlloggio, ResidenzaClienti residenzaClienti);
 
-
+    List<Contesto> findByTipoAlloggio(TipoAlloggio tipoAlloggio);
 }

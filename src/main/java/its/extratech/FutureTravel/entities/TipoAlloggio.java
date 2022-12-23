@@ -17,7 +17,7 @@ import java.util.List;
 public class TipoAlloggio {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID_ALLOGGIO")
     public String id;
 
     @Column(name = "DESCRIZIONE")

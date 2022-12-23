@@ -18,7 +18,7 @@ import java.util.Set;
 public class ResidenzaClienti {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID_RESIDENZA")
     public String id;
 
     @Column(name = "DESCRIZIONE")

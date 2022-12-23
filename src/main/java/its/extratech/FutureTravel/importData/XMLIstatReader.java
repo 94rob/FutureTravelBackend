@@ -88,10 +88,9 @@ public class XMLIstatReader {
                             importDataUtils.fromSeriesToRecordList(presenzeSeries));
 
                     // Aggiungo i Record di questo ciclo al listone che poi restituirò
-                    Iterator<Record> tempRecordListIterator = tempRecordList.listIterator();
-                    while(tempRecordListIterator.hasNext()){
-                        finalRecordList.add(tempRecordListIterator.next());
-                    }
+                    tempRecordList
+                            .stream()
+                            .map((i) -> finalRecordList.add(i));
 
                     System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
@@ -101,6 +100,7 @@ public class XMLIstatReader {
         return finalRecordList;
 
     }
+
 
     public List<Record> mixRecordListWithSameContesto(List<Record> arriviRecordList, List<Record> presenzeRecordList){
         List<Record> finalRecordList = new ArrayList<>();

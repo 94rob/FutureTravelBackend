@@ -18,15 +18,15 @@ public class Contesto {
     @Column(name = "ID_CONTESTO")
     public long id;
 
-    @JoinColumn(name = "TERRITORIO", referencedColumnName = "ID_PROVINCIA")
+    @JoinColumn(name = "PROVINCIA", referencedColumnName = "ID_PROVINCIA")
     @ManyToOne
     public Provincia provincia;
 
-    @JoinColumn (name = "TIPO_ALLOGGIO", referencedColumnName = "ID")
+    @JoinColumn (name = "TIPO_ALLOGGIO", referencedColumnName = "ID_ALLOGGIO")
     @ManyToOne
     public TipoAlloggio tipoAlloggio;
 
-    @JoinColumn (name = "RESIDENZA_CLIENTI", referencedColumnName = "ID")
+    @JoinColumn (name = "RESIDENZA_CLIENTI", referencedColumnName = "ID_RESIDENZA")
     @ManyToOne
     public ResidenzaClienti residenzaClienti;
 
