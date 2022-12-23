@@ -19,7 +19,7 @@ public class Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "ID_STORICO")
     public long id;
 
     @JoinColumn (name = "CONTESTO", referencedColumnName = "ID_CONTESTO")

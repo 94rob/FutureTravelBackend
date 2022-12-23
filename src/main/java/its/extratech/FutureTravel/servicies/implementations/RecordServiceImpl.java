@@ -1,17 +1,20 @@
 package its.extratech.FutureTravel.servicies.implementations;
 
-import its.extratech.FutureTravel.dtos.RecordFrontEndDto;
+import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.importData.XMLIstatReader;
 import its.extratech.FutureTravel.repositories.RecordRepository;
 import its.extratech.FutureTravel.servicies.interfaces.RecordService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecordServiceImpl implements RecordService {
@@ -31,71 +34,92 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     ResidenzaClientiServiceImpl residenzaClientiServiceImpl;
 
+    @Autowired
+    ModelMapper modelMapper;
 
     public void save(Record record){
         this.recordRepository.save(record);
     }
 
-    public String fetch(){
+
+    public List<RecordDtoPresenze> findAll(){
+        return this.recordRepository.findAll()
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoPresenze> findByContesto(Contesto contesto){
+        return this.recordRepository.findByContesto(contesto)
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoPresenze> findByTime(String time){
+        return this.recordRepository.findByTime(time)
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoPresenze> selByIdProvincia(String idProvincia){
+        return  this.recordRepository.selByIdProvincia(idProvincia)
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selByNomeProvincia(String nomeProvincia){
+        return this.recordRepository.selByNomeProvincia(nomeProvincia)
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<RecordDtoPresenze> selByIdTipoAlloggio(String idAlloggio){
+        return this.recordRepository.selByIdTipoAlloggio(idAlloggio)
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoPresenze> selByIdResidenzaClienti(String idResidenzaClienti){
+        return this.recordRepository.selByIdResidenzaClienti(idResidenzaClienti)
+                .stream()
+                .map(this::fromRecordToRecordDtoPresenze)
+                .collect(Collectors.toList());
+    }
+
+
+    public RecordDtoCompleto fromRecordToRecordDtoCompleto(Record record){
+        RecordDtoCompleto recordDtoCompleto = modelMapper.map(record, RecordDtoCompleto.class);
+        return recordDtoCompleto;
+    }
+
+    public RecordDtoPresenze fromRecordToRecordDtoPresenze(Record record){
+        RecordDtoPresenze recordDtoPresenze = modelMapper.map(record, RecordDtoPresenze.class);
+        return recordDtoPresenze;
+    }
+
+
+    public void fetch() throws IOException, InterruptedException {
         XMLIstatReader xmlIstatReader = new XMLIstatReader();
-        List<Record> recordList = null;
-        try {
-            recordList = xmlIstatReader.fetch();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        List<Record> recordList = xmlIstatReader.fetch();
 
         for (Record r : recordList){
-
-            Provincia provincia = this.provinciaServiceImpl.findById(r.getContesto().getProvincia().getId());
-            TipoAlloggio tipoAlloggio = this.tipoAlloggioServiceImpl.findById(r.getContesto().getTipoAlloggio().getId());
-            ResidenzaClienti residenzaClienti = this.residenzaClientiServiceImpl.findById(r.getContesto().getResidenzaClienti().getId());
-            Contesto contesto;
-            try{
-                contesto = this.contestoServiceImpl.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
-            } catch (NullPointerException e){
-                contesto = new Contesto();
-                contesto.setProvincia(provincia);
-                contesto.setTipoAlloggio(tipoAlloggio);
-                contesto.setResidenzaClienti(residenzaClienti);
-                this.contestoServiceImpl.save(contesto);
-            } finally {
-                contesto = this.contestoServiceImpl.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
-            }
+            Provincia provincia = this.provinciaServiceImpl
+                    .findById(r.getContesto().getProvincia().getId());
+            TipoAlloggio tipoAlloggio = this.tipoAlloggioServiceImpl
+                    .findById(r.getContesto().getTipoAlloggio().getId());
+            ResidenzaClienti residenzaClienti = this.residenzaClientiServiceImpl
+                    .findById(r.getContesto().getResidenzaClienti().getId());
+            Contesto contesto = this.contestoServiceImpl
+                    .findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
 
             r.setContesto(contesto);
             this.save(r);
         }
-
-        return recordList.get(0).toString();
-    }
-
-    public List<RecordFrontEndDto> findByNomeProvincia(String nomeProvincia){
-        List<Record> recordList = this.recordRepository.selByProvincia(nomeProvincia);
-        List<RecordFrontEndDto> recordFrontEndDtoList = new ArrayList<>();
-        try{
-            for(Record r : recordList){
-                recordFrontEndDtoList.add(this.fromRecordToRecordFrontEndDto(r));
-            }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
-        return recordFrontEndDtoList;
-    }
-
-    public RecordFrontEndDto fromRecordToRecordFrontEndDto(Record record){
-        RecordFrontEndDto recordFrontEndDto = new RecordFrontEndDto();
-
-        recordFrontEndDto.setTerritorio(record.getContesto().getProvincia().getNomeProvincia());
-        recordFrontEndDto.setResidenza_clienti(record.getContesto().getResidenzaClienti().getDescrizione());
-        recordFrontEndDto.setTipologia_esercizio(record.getContesto().getTipoAlloggio().getDescrizione());
-        recordFrontEndDto.setTime(record.getTime());
-        recordFrontEndDto.setArrivi(record.getArrivi());
-        recordFrontEndDto.setPresenze(record.getPresenze());
-
-        return recordFrontEndDto;
     }
 }
