@@ -21,20 +21,16 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    PropertyMap<Record, RecordDtoPresenze> recordPresenzeMapping = new PropertyMap<Record, RecordDtoPresenze>()
-    {
-        protected void configure()
-        {
+    PropertyMap<Record, RecordDtoPresenze> recordPresenzeMapping = new PropertyMap<>() {
+        protected void configure() {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
             map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());
         }
     };
 
-    PropertyMap<Record, RecordDtoCompleto> recordCompletoMapping = new PropertyMap<Record, RecordDtoCompleto>()
-    {
-        protected void configure()
-        {
+    PropertyMap<Record, RecordDtoCompleto> recordCompletoMapping = new PropertyMap<>() {
+        protected void configure() {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
             map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());

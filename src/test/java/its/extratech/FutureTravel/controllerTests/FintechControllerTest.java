@@ -22,8 +22,7 @@ public class FintechControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @BeforeEach
-    public void setup() throws Exception
-    {
+    public void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .build();

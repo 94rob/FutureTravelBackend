@@ -9,7 +9,6 @@ import its.extratech.FutureTravel.repositories.RecordRepository;
 import its.extratech.FutureTravel.servicies.interfaces.RecordService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -44,13 +43,6 @@ public class RecordServiceImpl implements RecordService {
 
     public List<RecordDtoPresenze> findAll(){
         return this.recordRepository.findAll()
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoPresenze> findByContesto(Contesto contesto){
-        return this.recordRepository.findByContesto(contesto)
                 .stream()
                 .map(this::fromRecordToRecordDtoPresenze)
                 .collect(Collectors.toList());
@@ -94,17 +86,15 @@ public class RecordServiceImpl implements RecordService {
 
 
     public RecordDtoCompleto fromRecordToRecordDtoCompleto(Record record){
-        RecordDtoCompleto recordDtoCompleto = modelMapper.map(record, RecordDtoCompleto.class);
-        return recordDtoCompleto;
+        return modelMapper.map(record, RecordDtoCompleto.class);
     }
 
     public RecordDtoPresenze fromRecordToRecordDtoPresenze(Record record){
-        RecordDtoPresenze recordDtoPresenze = modelMapper.map(record, RecordDtoPresenze.class);
-        return recordDtoPresenze;
+        return modelMapper.map(record, RecordDtoPresenze.class);
     }
 
 
-    public void fetch() throws IOException, InterruptedException {
+    public void fetch() throws IOException {
         XMLIstatReader xmlIstatReader = new XMLIstatReader();
         List<Record> recordList = xmlIstatReader.fetch();
 

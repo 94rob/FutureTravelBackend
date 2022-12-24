@@ -4,8 +4,6 @@ import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
 import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.Contesto;
 import its.extratech.FutureTravel.entities.Record;
-import org.springframework.data.repository.query.Param;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -14,8 +12,6 @@ public interface RecordService {
     void save(Record record);
 
     List<RecordDtoPresenze> findAll();
-
-    List<RecordDtoPresenze> findByContesto(Contesto contesto);
 
     List<RecordDtoPresenze> findByTime(String time);
 

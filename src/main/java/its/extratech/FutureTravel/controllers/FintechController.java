@@ -3,10 +3,7 @@ package its.extratech.FutureTravel.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
-import its.extratech.FutureTravel.servicies.implementations.ContestoServiceImpl;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
-import its.extratech.FutureTravel.servicies.implementations.ResidenzaClientiServiceImpl;
-import its.extratech.FutureTravel.servicies.implementations.TipoAlloggioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +17,6 @@ public class FintechController {
 
     @Autowired
     private RecordServiceImpl recordService;
-
-    @Autowired
-    private ContestoServiceImpl contestoService;
-
-    @Autowired
-    private TipoAlloggioServiceImpl tipoAlloggioService;
-
-    @Autowired
-    private ResidenzaClientiServiceImpl residenzaClientiService;
 
     @Autowired
     private ObjectMapper objectMapper;

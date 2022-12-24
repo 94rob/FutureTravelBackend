@@ -27,12 +27,12 @@ public class RecordController {
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch(){
         // String s = recordServiceImpl.fetch(); Serve per fetchare e inserire i dati istat nel db
-        return new ResponseEntity<String>("", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @GetMapping("/cerca")
     public ResponseEntity<?> returnRecordByProvincia(@RequestParam(name="provincia") String nomeProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList = this.recordServiceImpl.selByNomeProvincia(nomeProvincia);
-        return new ResponseEntity<String>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
+        return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 }
