@@ -33,7 +33,6 @@ public class FintechController {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @GetMapping("/all")
     public ResponseEntity<?> getAll() throws JsonProcessingException {
         List<RecordDtoPresenze> recordDtoPresenzeList = this.recordService.findAll();

@@ -3,13 +3,12 @@ package its.extratech.FutureTravel.insertDataTests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import its.extratech.FutureTravel.FutureTravelApplication;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.importData.*;
 import org.junit.jupiter.api.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FetchIstatAPITest {
