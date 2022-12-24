@@ -49,7 +49,7 @@ public class XMLIstatReader {
     }
 
 
-    public List<Record> fetch() throws IOException, InterruptedException {
+    public List<Record> fetch() throws IOException {
 
         Document documentPresenze;
         Document documentArrivi;
@@ -90,7 +90,7 @@ public class XMLIstatReader {
                     // Aggiungo i Record di questo ciclo al listone che poi restituirò
                     tempRecordList
                             .stream()
-                            .map((i) -> finalRecordList.add(i));
+                            .map(finalRecordList::add);
 
                     System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
@@ -106,6 +106,7 @@ public class XMLIstatReader {
         List<Record> finalRecordList = new ArrayList<>();
 
         for(Record recordArrivi : arriviRecordList){
+
             boolean flag = false;
             Iterator<Record> recordIterator = presenzeRecordList.listIterator();
 
@@ -124,13 +125,8 @@ public class XMLIstatReader {
         }
 
         for(Record recordPresenze : presenzeRecordList){
-            boolean flag = false;
-            for(Record recordArrivi : arriviRecordList){
-                if(Objects.equals(recordPresenze.getTime(), recordArrivi.getTime())){
-                    flag = true;
-                }
-            }
-            if(!flag){
+            if(arriviRecordList.stream()
+                    .noneMatch((item) -> Objects.equals(recordPresenze.getTime(), item.getTime()))){
                 finalRecordList.add(recordPresenze);
             }
         }
@@ -176,12 +172,11 @@ public class XMLIstatReader {
         HttpResponse<String> response = null;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
+        assert response != null;
         return response.body();
     }
 
