@@ -48,7 +48,7 @@ public class FrontEndController {
 
     @GetMapping("/alloggio/other")
     public ResponseEntity<?> getByTipoAlloggioOther(@Param("startDate") String startDate,
-                                                        @Param("endDate") String endDate) throws JsonProcessingException {
+                                                    @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdTipoAlloggioFE("OTHER") :
                         endDate == null ? this.recordService.selByIdTipoAlloggioFE("OTHER", startDate) :
@@ -100,8 +100,8 @@ public class FrontEndController {
 
     @GetMapping("/alloggio/abs/other/{idProvincia}")
     public ResponseEntity<?> getByTipoAlloggioOtherAbsByIdProvincia(@Param("startDate") String startDate,
-                                                                        @Param("endDate") String endDate,
-                                                                        @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
+                                                                    @Param("endDate") String endDate,
+                                                                    @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdTipoAlloggioAndByIdProvinciaAbsFE("OTHER", idProvincia) :
                         endDate == null ? this.recordService.selByIdTipoAlloggioAndByIdProvinciaAbsFE("OTHER", startDate, idProvincia) :
@@ -142,8 +142,8 @@ public class FrontEndController {
 
     @GetMapping("/residenza/estero/{idProvincia}")
     public ResponseEntity<?> getByResidenzaEsteroByProvincia(@Param("startDate") String startDate,
-                                                         @Param("endDate") String endDate,
-                                                         @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
+                                                             @Param("endDate") String endDate,
+                                                             @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaFE("WRL_X_ITA", idProvincia) :
                         endDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaFE("WRL_X_ITA", startDate, idProvincia) :
@@ -163,8 +163,8 @@ public class FrontEndController {
 
     @GetMapping("/residenza/abs/it/{idProvincia}")
     public ResponseEntity<?> getByResidenzaItAbsByProvincia(@Param("startDate") String startDate,
-                                                         @Param("endDate") String endDate,
-                                                         @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
+                                                            @Param("endDate") String endDate,
+                                                            @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaAbsFE("IT", idProvincia) :
                         endDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaAbsFE("IT", startDate, idProvincia) :
@@ -174,7 +174,7 @@ public class FrontEndController {
 
     @GetMapping("/residenza/abs/estero")
     public ResponseEntity<?> getByResidenzaEsteroAbs(@Param("startDate") String startDate,
-                                                 @Param("endDate") String endDate) throws JsonProcessingException {
+                                                     @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdResidenzaClientiAbsFE("WRL_X_ITA") :
                         endDate == null ? this.recordService.selByIdResidenzaClientiAbsFE("WRL_X_ITA", startDate) :
@@ -184,8 +184,8 @@ public class FrontEndController {
 
     @GetMapping("/residenza/abs/estero/{idProvincia}")
     public ResponseEntity<?> getByResidenzaEsteroAbsByProvincia(@Param("startDate") String startDate,
-                                                            @Param("endDate") String endDate,
-                                                            @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
+                                                                @Param("endDate") String endDate,
+                                                                @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaAbsFE("WRL_X_ITA", idProvincia) :
                         endDate == null ? this.recordService.selByIdResidenzaClientiAndByIdProvinciaAbsFE("WRL_X_ITA", startDate, idProvincia) :
@@ -193,5 +193,25 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
+    @GetMapping("/abs")
+    public ResponseEntity<?> getAbsoluteData(@Param("startDate") String startDate,
+                                             @Param("endDate") String endDate) throws JsonProcessingException {
+        List<RecordDtoCompleto> recordDtoCompletoList =
+                startDate == null ? this.recordService.selAbsoluteData() :
+                        endDate == null ? this.recordService.selAbsoluteData(startDate) :
+                                this.recordService.selAbsoluteData(startDate, endDate);
+        return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
+    }
+
+    @GetMapping("/abs/{idProvincia}")
+    public ResponseEntity<?> getAbsoluteDataByProvincia(@Param("startDate") String startDate,
+                                                        @Param("endDate") String endDate,
+                                                        @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
+        List<RecordDtoCompleto> recordDtoCompletoList =
+                startDate == null ? this.recordService.selAbsoluteDataByIdProvincia(idProvincia) :
+                        endDate == null ? this.recordService.selAbsoluteDataByIdProvincia(idProvincia, startDate) :
+                                this.recordService.selAbsoluteDataByIdProvincia(idProvincia, startDate, endDate);
+        return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
+    }
 
 }

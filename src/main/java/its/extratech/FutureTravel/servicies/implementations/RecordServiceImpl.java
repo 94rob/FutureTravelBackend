@@ -45,15 +45,15 @@ public class RecordServiceImpl implements RecordService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate, String endDate) {
-        return this.recordRepository.selByIdTipoAlloggioBetweenTwoDates(idAlloggio, startDate, endDate)
+    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate) {
+        return this.recordRepository.selByIdTipoAlloggioSinceDate(idAlloggio, startDate)
                 .stream()
                 .map(this::fromRecordToRecordDtoCompleto)
                 .collect(Collectors.toList());
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate) {
-        return this.recordRepository.selByIdTipoAlloggioSinceDate(idAlloggio, startDate)
+    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate, String endDate) {
+        return this.recordRepository.selByIdTipoAlloggioBetweenTwoDates(idAlloggio, startDate, endDate)
                 .stream()
                 .map(this::fromRecordToRecordDtoCompleto)
                 .collect(Collectors.toList());
@@ -206,6 +206,48 @@ public class RecordServiceImpl implements RecordService {
                 .collect(Collectors.toList());
     }
 
+    public List<RecordDtoCompleto> selAbsoluteData(){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.findAll()))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selAbsoluteData(String startDate){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllSinceDate(startDate)))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selAbsoluteData(String startDate, String endDate){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllBetweenTwoDates(startDate, endDate)))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String idProvincia){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia)))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String startDate, String idProvincia){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvinciaSinceDate(startDate, idProvincia)))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String startDate, String endDate, String idProvincia){
+        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvinciaBetweenTwoDates(startDate, endDate, idProvincia)))
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .collect(Collectors.toList());
+    }
+
     public List<RecordDtoPresenze> findAll() {
         return this.recordRepository.findAll()
                 .stream()
@@ -296,6 +338,7 @@ public class RecordServiceImpl implements RecordService {
                     newR.getContesto().getResidenzaClienti().setId("ALL");
                     newR.getContesto().getResidenzaClienti().setDescrizione("ALL");
                     newList.add(newR);
+                    recordList.remove(j);
                     flag = true;
                 }
             }
@@ -324,6 +367,7 @@ public class RecordServiceImpl implements RecordService {
                     newR.getContesto().getTipoAlloggio().setId("ALL");
                     newR.getContesto().getTipoAlloggio().setDescrizione("ALL");
                     newList.add(newR);
+                    recordList.remove(j);
                     flag = true;
                 }
             }
