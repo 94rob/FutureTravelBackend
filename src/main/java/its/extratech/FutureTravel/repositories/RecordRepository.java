@@ -13,6 +13,38 @@ import java.util.List;
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
     @Query(value = "SELECT * FROM STORICO s " +
+            "WHERE s.TIME >= :startDate ;", nativeQuery = true)
+    List<Record> selAllSinceDate(@Param("startDate") String startDate);
+
+    @Query(value = "SELECT * FROM STORICO s " +
+            "WHERE s.TIME BETWEEN :startDate AND :endDate ;", nativeQuery = true)
+    List<Record> selAllBetweenTwoDates(@Param("startDate") String startDate,
+                                       @Param("endDate") String endDate);
+
+    @Query(value = "SELECT * FROM STORICO s " +
+            "INNER JOIN CONTESTO c ON s.CONTESTO = c.ID_CONTESTO " +
+            "INNER JOIN PROVINCIA p ON c.PROVINCIA = p.ID_PROVINCIA " +
+            "WHERE p.ID_PROVINCIA LIKE :idProvincia ;", nativeQuery = true)
+    List<Record> selByIdProvincia(@Param("idProvincia") String idProvincia);
+
+    @Query(value = "SELECT * FROM STORICO s " +
+            "INNER JOIN CONTESTO c ON s.CONTESTO = c.ID_CONTESTO " +
+            "INNER JOIN PROVINCIA p ON c.PROVINCIA = p.ID_PROVINCIA " +
+            "WHERE s.TIME >= :startDate " +
+            "AND p.ID_PROVINCIA LIKE :idProvincia ;", nativeQuery = true)
+    List<Record> selByIdProvinciaSinceDate(@Param("startDate") String startDate,
+                                           @Param("idProvincia") String idProvincia);
+
+    @Query(value = "SELECT * FROM STORICO s " +
+            "INNER JOIN CONTESTO c ON s.CONTESTO = c.ID_CONTESTO " +
+            "INNER JOIN PROVINCIA p ON c.PROVINCIA = p.ID_PROVINCIA " +
+            "WHERE s.TIME BETWEEN :startDate AND :endDate " +
+            "AND p.ID_PROVINCIA LIKE :idProvincia ;", nativeQuery = true)
+    List<Record> selByIdProvinciaBetweenTwoDates(@Param("startDate") String startDate,
+                                                 @Param("endDate") String endDate,
+                                                 @Param("idProvincia") String idProvincia);
+
+    @Query(value = "SELECT * FROM STORICO s " +
             "INNER JOIN CONTESTO c ON s.CONTESTO = c.ID_CONTESTO " +
             "INNER JOIN PROVINCIA p ON c.PROVINCIA = p.ID_PROVINCIA " +
             "WHERE p.NOME_PROVINCIA LIKE :nomeProvincia ;", nativeQuery = true)
@@ -136,14 +168,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
                                                                         @Param("startDate") String startDate,
                                                                         @Param("endDate") String endDate,
                                                                         @Param("idProvincia") String idProvincia);
-
-    @Query(value = "SELECT * FROM STORICO s " +
-            "INNER JOIN CONTESTO c ON s.CONTESTO = c.ID_CONTESTO " +
-            "INNER JOIN PROVINCIA p ON c.PROVINCIA = p.ID_PROVINCIA " +
-            "WHERE p.ID_PROVINCIA LIKE :idProvincia ;", nativeQuery = true)
-    List<Record> selByIdProvincia(@Param("idProvincia") String idProvincia);
-
-    List<Record> findByContesto(Contesto contesto);
 
     List<Record> findByTime(String time);
 
