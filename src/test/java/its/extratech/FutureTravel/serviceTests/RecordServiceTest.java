@@ -119,7 +119,7 @@ public class RecordServiceTest {
     @Test
     public void testCollapseResidenzeClientiReturnsRightListSize(){
         List<Record> finalRecordList = this.recordService.collapseResidenzeClienti(recordList);
-        Assertions.assertEquals(3, finalRecordList.size());
+        Assertions.assertEquals(2, finalRecordList.size());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class RecordServiceTest {
     @Test
     public void testCollapseTipoAlloggioReturnsRightListSize(){
         List<Record> finalRecordList = this.recordService.collapseTipoAlloggio(recordList);
-        Assertions.assertEquals(3, finalRecordList.size());
+        Assertions.assertEquals(2, finalRecordList.size());
     }
 
 

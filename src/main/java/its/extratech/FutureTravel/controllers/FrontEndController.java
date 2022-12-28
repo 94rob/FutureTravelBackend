@@ -67,7 +67,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/alloggio/abs/hotellike")
+    @GetMapping("/abs/alloggio/hotellike")
     public ResponseEntity<?> getByTipoAlloggioHotellikeAbs(@Param("startDate") String startDate,
                                                            @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
@@ -77,7 +77,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/alloggio/abs/hotellike/{idProvincia}")
+    @GetMapping("/abs/alloggio/hotellike/{idProvincia}")
     public ResponseEntity<?> getByTipoAlloggioHotellikeAbsByIdProvincia(@Param("startDate") String startDate,
                                                                         @Param("endDate") String endDate,
                                                                         @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
@@ -88,7 +88,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/alloggio/abs/other")
+    @GetMapping("/abs/alloggio/other")
     public ResponseEntity<?> getByTipoAlloggioOtherAbs(@Param("startDate") String startDate,
                                                        @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
@@ -98,7 +98,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/alloggio/abs/other/{idProvincia}")
+    @GetMapping("/abs/alloggio/other/{idProvincia}")
     public ResponseEntity<?> getByTipoAlloggioOtherAbsByIdProvincia(@Param("startDate") String startDate,
                                                                     @Param("endDate") String endDate,
                                                                     @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
@@ -151,7 +151,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/residenza/abs/it")
+    @GetMapping("/abs/residenza/it")
     public ResponseEntity<?> getByResidenzaItAbs(@Param("startDate") String startDate,
                                                  @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
@@ -161,7 +161,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/residenza/abs/it/{idProvincia}")
+    @GetMapping("/abs/residenza/it/{idProvincia}")
     public ResponseEntity<?> getByResidenzaItAbsByProvincia(@Param("startDate") String startDate,
                                                             @Param("endDate") String endDate,
                                                             @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
@@ -172,7 +172,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/residenza/abs/estero")
+    @GetMapping("/abs/residenza/estero")
     public ResponseEntity<?> getByResidenzaEsteroAbs(@Param("startDate") String startDate,
                                                      @Param("endDate") String endDate) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
@@ -182,7 +182,7 @@ public class FrontEndController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 
-    @GetMapping("/residenza/abs/estero/{idProvincia}")
+    @GetMapping("/abs/residenza/estero/{idProvincia}")
     public ResponseEntity<?> getByResidenzaEsteroAbsByProvincia(@Param("startDate") String startDate,
                                                                 @Param("endDate") String endDate,
                                                                 @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
