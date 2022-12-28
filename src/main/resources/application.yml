@@ -11,13 +11,20 @@ spring:
       platform: mariadb
   datasource:
     password: futuretravel
-    url: jdbc:mariadb://localhost:3306/Future_Travel
+    url: jdbc:mariadb://18.102.24.178:3306/Future_Travel
     username: futuretravel
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDB10Dialect
+        dialect: org.hibernate.dialect.MariaDBDialect
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
     show-sql: true
+    open-in-view: true

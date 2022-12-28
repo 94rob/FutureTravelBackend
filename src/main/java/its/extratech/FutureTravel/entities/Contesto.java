@@ -1,13 +1,13 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Objects;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -15,14 +15,30 @@ import lombok.Setter;
 public class Contesto {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_CONTESTO")
     public long id;
 
-    @Column (name = "TERRITORIO")
+    @JoinColumn(name = "PROVINCIA", referencedColumnName = "ID_PROVINCIA")
+    @ManyToOne
     public Provincia provincia;
 
-    @Column (name = "TIPO_ALLOGGIO")
+    @JoinColumn (name = "TIPO_ALLOGGIO", referencedColumnName = "ID_ALLOGGIO")
+    @ManyToOne
     public TipoAlloggio tipoAlloggio;
 
-    @Column (name = "RESIDENZA_CLIENTI")
+    @JoinColumn (name = "RESIDENZA_CLIENTI", referencedColumnName = "ID_RESIDENZA")
+    @ManyToOne
     public ResidenzaClienti residenzaClienti;
+
+    @OneToMany(mappedBy = "contesto", fetch = FetchType.LAZY)
+    public List<Record> records;
+
+
+    public boolean equalsTo(Contesto c){
+        return ((Objects.equals(c.getProvincia().getId(), provincia.getId())) &&
+                (Objects.equals(c.getResidenzaClienti().getId(), residenzaClienti.getId())) &&
+                (Objects.equals(c.getTipoAlloggio().getId(), tipoAlloggio.getId())));
+    }
+
 }

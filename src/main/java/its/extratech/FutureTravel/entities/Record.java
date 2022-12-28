@@ -1,9 +1,6 @@
 package its.extratech.FutureTravel.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,17 +15,31 @@ import lombok.Setter;
 public class Record {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_STORICO")
     public long id;
 
-    @Column(name = "CONTESTO")
+    @JoinColumn (name = "CONTESTO", referencedColumnName = "ID_CONTESTO")
+    @ManyToOne
     public Contesto contesto;
 
     @Column(name = "TIME")
-    public int time;
+    public String time;
 
     @Column(name = "PRESENZE")
     public int presenze;
 
     @Column(name = "ARRIVI")
     public int arrivi;
+
+    @Override
+    public String toString(){
+        return "Contesto: " +
+                "   \n\tId provincia: " + this.contesto.getProvincia().getId() +
+                "   \n\tId tipo alloggio: " + this.contesto.getTipoAlloggio().getId() +
+                "   \n\tId residenza clienti: " + this.contesto.getResidenzaClienti().getId() +
+                "\n Mese: " + this.getTime() +
+                "\n Presenze: " + this.getPresenze() +
+                "\n Arrivi: " + this.getArrivi();
+    }
 }

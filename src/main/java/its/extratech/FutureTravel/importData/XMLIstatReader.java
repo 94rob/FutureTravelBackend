@@ -1,57 +1,140 @@
 package its.extratech.FutureTravel.importData;
 
 
+import its.extratech.FutureTravel.entities.Record;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class XMLIstatReader {
 
-    public static Map<String, String> articleMapOne;
+    public static ArrayList<String> province;
+    public static ArrayList<String> residenzeClienti;
+    public static ArrayList<String> indicatori;
+    public static ArrayList<String> tipologieEsercizi;
+    public static ImportDataUtils importDataUtils;
+
     static {
-        articleMapOne = new HashMap<>();
-        articleMapOne.put("Caserta", "ITF31");
-        articleMapOne.put("Benevento", "ITF32");
-        articleMapOne.put("Napoli", "ITF33");
-        articleMapOne.put("Avellino", "ITF34");
-        articleMapOne.put("Salerno", "ITF35");
+        province = new ArrayList<>();
+        province.add("ITF31");
+        province.add("ITF32");
+        province.add("ITF33");
+        province.add("ITF34");
+        province.add("ITF35");
+
+        residenzeClienti = new ArrayList<>();
+        residenzeClienti.add("IT");
+        residenzeClienti.add("WRL_X_ITA");
+
+        indicatori = new ArrayList<>();
+        indicatori.add("NI");
+        indicatori.add("AR");
+
+        tipologieEsercizi = new ArrayList<>();
+        tipologieEsercizi.add("HOTELLIKE");
+        tipologieEsercizi.add("OTHER");
+
+        importDataUtils = new ImportDataUtils();
     }
 
-    public static void main(String[] args) {
-        Document doc = fetchIstatApi("IT", "ITF3", "NI", "ALL", "");
 
-        try{
-            List<Series> series = getSeries(doc);
+    public List<Record> fetch() throws IOException {
 
-            System.out.println(series.get(0).toString());
+        Document documentPresenze;
+        Document documentArrivi;
+        Series arriviSeries;
+        Series presenzeSeries;
 
-        } catch(NullPointerException e){
-            e.printStackTrace();
+        List<Record> finalRecordList = new ArrayList<>();
+        List<Record> tempRecordList;
+
+        for (String provincia : province) {
+            for (String tipologiaEsercizio : tipologieEsercizi){
+                for (String residenzaClienti : residenzeClienti){
+
+                    // eseguo la chiamata all'API istat, con i valori di questo ciclo; ne eseguo una per gli ARRIVI e una per le PRESENZE
+                    // costruisco un URL e lo passo al metodo che effettua la chiamata, questo mi restituisce una stringa
+                    // che poi trasformo in un Document per poterlo spacchettare
+                    documentPresenze = importDataUtils.
+                                            fromStringToXMLDocument(
+                                            fetchIstatApi(
+                                                    createUrlForIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "")));
+                    documentArrivi = importDataUtils.
+                                            fromStringToXMLDocument(
+                                            fetchIstatApi(
+                                                    createUrlForIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "")));
+
+                    // trasformo i Document in Series, oggetti che ricalcano il modo in cui è costruito
+                    // l'XML che l'API Istat mi ha restituito
+                    arriviSeries = getSeries(documentArrivi).get(0);
+                    presenzeSeries = getSeries(documentPresenze).get(0);
+
+                    // Trasformo le Series in oggetti Record così poi li potrò salvare sul DB,
+                    // ma prima devo unire i record che hanno lo stesso contesto (ore ho due record, uno per
+                    // le presenze e uno per gli arrivi, ne voglio uno solo con i due campi popolati)
+                    tempRecordList = this.mixRecordListWithSameContesto(
+                            importDataUtils.fromSeriesToRecordList(arriviSeries),
+                            importDataUtils.fromSeriesToRecordList(presenzeSeries));
+
+                    // Aggiungo i Record di questo ciclo al listone che poi restituirò
+                    tempRecordList
+                            .stream()
+                            .map(finalRecordList::add);
+
+                    System.out.println("N° record final list finora: " + finalRecordList.size());
+                }
+            }
+        }
+        System.out.println("Finito di fetchare\nN° di record: " + finalRecordList.size());
+        return finalRecordList;
+
+    }
+
+
+    public List<Record> mixRecordListWithSameContesto(List<Record> arriviRecordList, List<Record> presenzeRecordList){
+        List<Record> finalRecordList = new ArrayList<>();
+
+        for(Record recordArrivi : arriviRecordList){
+
+            boolean flag = false;
+            Iterator<Record> recordIterator = presenzeRecordList.listIterator();
+
+            while((!flag) && (recordIterator.hasNext())){
+                Record r = recordIterator.next();
+
+                if(Objects.equals(r.getTime(), recordArrivi.getTime())){
+                    recordArrivi.setPresenze(r.getPresenze());
+                    flag = true;
+                    finalRecordList.add(recordArrivi);
+                }
+            }
+            if(!flag){
+                finalRecordList.add(recordArrivi);
+            }
         }
 
+        for(Record recordPresenze : presenzeRecordList){
+            if(arriviRecordList.stream()
+                    .noneMatch((item) -> Objects.equals(recordPresenze.getTime(), item.getTime()))){
+                finalRecordList.add(recordPresenze);
+            }
+        }
+
+        return finalRecordList;
     }
 
-    public static Document fetchIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString) {
+    public String createUrlForIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString){
         String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/";
         url += "M" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
         url += "551_553" + "."; // codice ATECO_2007 che identifica le strutture ricettive
@@ -64,15 +147,17 @@ public class XMLIstatReader {
         url += ".."; // grado urbanizzazione, località costiera
         url += "/?" + queryString;
 
-        Document doc = null;
+        return url;
+    }
 
-        try {
-            // set HttpClient
+    public String fetchIstatApi(String url) {
+
+            // setto l'HttpClient
             HttpClient client = HttpClient.newBuilder()
                     .followRedirects(HttpClient.Redirect.NORMAL)
                     .build();
 
-            // set HttpRequest
+            // setto l'HttpRequest
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .timeout(Duration.ofMinutes(2))
@@ -80,40 +165,22 @@ public class XMLIstatReader {
                     .GET()
                     .build();
 
-            // execute
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // DEBUG
+            System.out.println(url);
 
-            // prove
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/tmp/file.xml"));
-            writer.write(response.body());
-            writer.close();
-
-            try{
-                File xmlFile = new File("src/main/resources/tmp/file.xml");
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                doc = builder.parse(xmlFile);
-            } catch (ParserConfigurationException e){
-                System.out.println("ParserConfigurationException: " + e);
-            } catch (IOException e){
-                System.out.println("IOException: " + e);
-            } catch (SAXException e){
-                System.out.println("SAXException: " + e);
-            }
-
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            // eseguo la richiesta HTTP
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return doc;
+
+        assert response != null;
+        return response.body();
     }
 
-
-    public static List<Series> getSeries(Document doc){
+    public List<Series> getSeries(Document doc){
         NodeList seriesNodeList = doc.getElementsByTagName("generic:Series");
 
         List<Series> series = new ArrayList<>();
@@ -150,10 +217,10 @@ public class XMLIstatReader {
                     }
 
                     // popolo la SeriesKey con i valori presi dagli attributi dei Value
-                    sk.setTerritorio(valuesElementList.get(4).getAttribute("value")); // ITTER107
-                    sk.setTipoDato(valuesElementList.get(7).getAttribute("value")); // INDS (AR o NI)
+                    sk.setCodiceProvincia(valuesElementList.get(4).getAttribute("value")); // ITTER107
+                    sk.setIndicatore(valuesElementList.get(7).getAttribute("value")); // INDS (AR o NI)
                     sk.setTipoAlloggio(valuesElementList.get(6).getAttribute("value")); // TIPO_ESERCIZIO
-                    sk.setProvenienzaClienti(valuesElementList.get(3).getAttribute("value")); // RES_CLIENTI
+                    sk.setResidenzaClienti(valuesElementList.get(3).getAttribute("value")); // RES_CLIENTI
 
                     s.setSeriesKey(sk);
 
@@ -176,8 +243,14 @@ public class XMLIstatReader {
 
                             // Setto il valore
                             Node valueNode = currentObsElement.getElementsByTagName("generic:ObsValue").item(0);
-                            String value = ((Element) valueNode).getAttribute("value");
-                            obs.setValue(value);
+                            try{
+                                String value = ((Element) valueNode).getAttribute("value");
+                                obs.setValue(value);
+                            } catch (NullPointerException e){
+                                System.out.println("Valore assente");
+                                continue;
+                            }
+
 
                             obsList.add(obs);
                         }
