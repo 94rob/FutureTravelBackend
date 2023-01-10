@@ -1,5 +1,7 @@
 server:
   port: 8085
+  servlet:
+    context-path: /gruppo8
 
 spring:
   application:
@@ -11,20 +13,19 @@ spring:
       platform: mariadb
   datasource:
     password: futuretravel
-    url: jdbc:mariadb://18.102.24.178:3306/Future_Travel
+    url: jdbc:mysql://localhost:3306/future_travel
     username: futuretravel
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDBDialect
+        dialect: org.hibernate.dialect.MySQLDialect
       jakarta:
         persistence:
           sharedCache:
             mode: UNSPECIFIED
     show-sql: true
     open-in-view: true
+
