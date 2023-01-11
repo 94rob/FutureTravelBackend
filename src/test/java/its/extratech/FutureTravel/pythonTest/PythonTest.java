@@ -93,6 +93,23 @@ public class PythonTest {
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
+    @Test
+    public void JSON() throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("Json.py"));
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
+        List<String> results = readProcessOutput(process.getInputStream());
+
+        System.out.println(results);
+
+        MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
+        //MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
+
+        int exitCode = process.waitFor();
+        assertEquals("No errors should be detected", 0, exitCode);
+    }
+
 
     @Test
     public void HelloII() {
