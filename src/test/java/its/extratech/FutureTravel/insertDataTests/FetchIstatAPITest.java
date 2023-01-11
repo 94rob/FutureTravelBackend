@@ -163,8 +163,8 @@ public class FetchIstatAPITest {
 
 
     static {
-        SeriesKey seriesKeyArrivi = new SeriesKey("ITF31", "AR", "HOTELLIKE", "IT");
-        SeriesKey seriesKeyPresenze = new SeriesKey("ITF31", "NI", "HOTELLIKE", "IT");
+        SeriesKey seriesKeyArrivi = new SeriesKey("M", "ITF31", "AR", "HOTELLIKE", "IT");
+        SeriesKey seriesKeyPresenze = new SeriesKey("M", "ITF31", "NI", "HOTELLIKE", "IT");
 
         Obs obs1 = new Obs("2008-01", "123");
         Obs obs2 = new Obs("2008-01", "234");

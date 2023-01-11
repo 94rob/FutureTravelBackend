@@ -20,7 +20,8 @@ import java.util.*;
 public class XMLIstatReader {
 
     public static ArrayList<String> province;
-    public static ArrayList<String> residenzeClienti;
+    public static ArrayList<String> residenzeClientiMensili;
+    public static ArrayList<String> residenzeClientiAnnuali;
     public static ArrayList<String> indicatori;
     public static ArrayList<String> tipologieEsercizi;
     public static ImportDataUtils importDataUtils;
@@ -33,9 +34,74 @@ public class XMLIstatReader {
         province.add("ITF34");
         province.add("ITF35");
 
-        residenzeClienti = new ArrayList<>();
-        residenzeClienti.add("IT");
-        residenzeClienti.add("WRL_X_ITA");
+        residenzeClientiMensili = new ArrayList<>();
+        residenzeClientiMensili.add("IT");
+        residenzeClientiMensili.add("WRL_X_ITA");
+
+        residenzeClientiAnnuali = new ArrayList<>();
+        residenzeClientiAnnuali.add("AFR_OTH");
+        residenzeClientiAnnuali.add("AFRMED");
+        residenzeClientiAnnuali.add("AME_C_S_OTH");
+        residenzeClientiAnnuali.add("AME_N_OTH");
+        residenzeClientiAnnuali.add("AR");
+        residenzeClientiAnnuali.add("ASI_OTH");
+        residenzeClientiAnnuali.add("ASI_W_OTH");
+        residenzeClientiAnnuali.add("AT");
+        residenzeClientiAnnuali.add("AU");
+        residenzeClientiAnnuali.add("BE");
+        residenzeClientiAnnuali.add("BG");
+        residenzeClientiAnnuali.add("BR");
+        residenzeClientiAnnuali.add("CA");
+        residenzeClientiAnnuali.add("CH_LI");
+        residenzeClientiAnnuali.add("CN");
+        residenzeClientiAnnuali.add("CY");
+        residenzeClientiAnnuali.add("CZ");
+        residenzeClientiAnnuali.add("DE");
+        residenzeClientiAnnuali.add("DK");
+        residenzeClientiAnnuali.add("EE");
+        residenzeClientiAnnuali.add("EG");
+        residenzeClientiAnnuali.add("ES");
+        residenzeClientiAnnuali.add("EU");
+        residenzeClientiAnnuali.add("EUR_NEU");
+        residenzeClientiAnnuali.add("EUR_OTH");
+        residenzeClientiAnnuali.add("FI");
+        residenzeClientiAnnuali.add("FR");
+        residenzeClientiAnnuali.add("GR");
+        residenzeClientiAnnuali.add("HR");
+        residenzeClientiAnnuali.add("HU");
+        residenzeClientiAnnuali.add("IE");
+        residenzeClientiAnnuali.add("IL");
+        residenzeClientiAnnuali.add("IN");
+        residenzeClientiAnnuali.add("IS");
+        residenzeClientiAnnuali.add("IT");
+        residenzeClientiAnnuali.add("JP");
+        residenzeClientiAnnuali.add("KR");
+        residenzeClientiAnnuali.add("LT");
+        residenzeClientiAnnuali.add("LU");
+        residenzeClientiAnnuali.add("LV");
+        residenzeClientiAnnuali.add("MT");
+        residenzeClientiAnnuali.add("MX");
+        residenzeClientiAnnuali.add("NL");
+        residenzeClientiAnnuali.add("NO");
+        residenzeClientiAnnuali.add("NZ");
+        residenzeClientiAnnuali.add("OCE_OTH");
+        residenzeClientiAnnuali.add("OTH");
+        residenzeClientiAnnuali.add("PL");
+        residenzeClientiAnnuali.add("PT");
+        residenzeClientiAnnuali.add("RO");
+        residenzeClientiAnnuali.add("RU");
+        residenzeClientiAnnuali.add("SE");
+        residenzeClientiAnnuali.add("SI");
+        residenzeClientiAnnuali.add("SK");
+        residenzeClientiAnnuali.add("TR");
+        residenzeClientiAnnuali.add("UK");
+        residenzeClientiAnnuali.add("US");
+        residenzeClientiAnnuali.add("VE");
+        residenzeClientiAnnuali.add("WORLD");
+        residenzeClientiAnnuali.add("WRL_X_EUR");
+        residenzeClientiAnnuali.add("WRL_X_ITA");
+        residenzeClientiAnnuali.add("ZA");
+
 
         indicatori = new ArrayList<>();
         indicatori.add("NI");
@@ -61,7 +127,7 @@ public class XMLIstatReader {
 
         for (String provincia : province) {
             for (String tipologiaEsercizio : tipologieEsercizi){
-                for (String residenzaClienti : residenzeClienti){
+                for (String residenzaClienti : residenzeClientiMensili){
 
                     // eseguo la chiamata all'API istat, con i valori di questo ciclo; ne eseguo una per gli ARRIVI e una per le PRESENZE
                     // costruisco un URL e lo passo al metodo che effettua la chiamata, questo mi restituisce una stringa
@@ -136,7 +202,7 @@ public class XMLIstatReader {
 
     public String createUrlForIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString){
         String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/";
-        url += "M" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
+        url += "A" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
         url += "551_553" + "."; // codice ATECO_2007 che identifica le strutture ricettive
         url += "N" + "."; // adjustment
         url += paeseResidenzaClienti + "."; // accetta come valori WORLD, ALL, IT, WRL_X_ITA (estero)
@@ -217,6 +283,7 @@ public class XMLIstatReader {
                     }
 
                     // popolo la SeriesKey con i valori presi dagli attributi dei Value
+                    sk.setFrequenza(valuesElementList.get(0).getAttribute("value")); // FREQ
                     sk.setCodiceProvincia(valuesElementList.get(4).getAttribute("value")); // ITTER107
                     sk.setIndicatore(valuesElementList.get(7).getAttribute("value")); // INDS (AR o NI)
                     sk.setTipoAlloggio(valuesElementList.get(6).getAttribute("value")); // TIPO_ESERCIZIO

@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class SeriesKey {
+    public String frequenza;
     public String codiceProvincia;
     public String indicatore;
     public String tipoAlloggio;

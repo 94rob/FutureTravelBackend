@@ -1,7 +1,9 @@
 package its.extratech.FutureTravel.serviceTests;
 
+import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
+import its.extratech.FutureTravel.repositories.RecordRepository;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,9 @@ public class RecordServiceTest {
 
     @Autowired
     RecordServiceImpl recordService;
+
+    @Autowired
+    RecordRepository recordRepository;
 
     private List<Record> recordList = new ArrayList<>();
 
@@ -134,6 +140,18 @@ public class RecordServiceTest {
         List<Record> finalRecordList = this.recordService.collapseTipoAlloggio(recordList);
         Assertions.assertEquals(2, finalRecordList.size());
     }
+
+    /* TODO
+        Risolvere l'errore org.hibernate.LazyInitializationException: could not initialize proxy
+        così si potranno eseguire i test per lo strato di persistenza e di service
+    @Test
+    public void testSelAbsoluteDataByIdProvincia(){
+        List<Record> recordList = this.recordRepository.selByIdProvinciaSinceDate("2008-01", "ITF31");
+        List<RecordDtoCompleto> recordDtoCompletoList = this.recordService.selAbsoluteDataByIdProvincia("2008-01", "ITF31");
+        Assertions.assertEquals(recordList.size(), recordDtoCompletoList.size() / 4);
+
+    }
+    */
 
 
 }

@@ -32,8 +32,9 @@ public class Record {
     @Column(name = "ARRIVI")
     public int arrivi;
 
+
     @Column(name = "TIPODATO")
-    public String tipodato;
+    public char tipodato;
 
     @Override
     public String toString(){
