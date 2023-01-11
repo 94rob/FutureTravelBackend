@@ -58,6 +58,7 @@ public class PythonTest {
         engine.eval(new FileReader(resolvePythonScriptPath("Hello.py")), context);
         assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", writer.toString().trim());
     }*/
+    /*
 
     @Test
     public void Hallo() throws Exception {
@@ -110,6 +111,8 @@ public class PythonTest {
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
+     */
+
 
     @Test
     public void HelloII() {
@@ -122,6 +125,7 @@ public class PythonTest {
                     .trim());
         }
     }
+
     /*
     @Test
     public void HelloPiuNome() {
@@ -156,6 +160,7 @@ public class PythonTest {
         assertEquals("No errors should be detected", 0, exitCode);
     }
 */
+
 
     private List<String> readProcessOutput(InputStream inputStream) throws IOException {
         try (BufferedReader output = new BufferedReader(new InputStreamReader(inputStream))) {

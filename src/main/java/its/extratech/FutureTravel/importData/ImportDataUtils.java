@@ -40,7 +40,6 @@ public class ImportDataUtils {
             Record record = new Record();
             record.setContesto(contesto);
             record.setTime(obs.getMese());
-            record.setFrequenza(series.seriesKey.getFrequenza().charAt(0));
 
             int value = Integer.parseInt(obs.getValue());
 
