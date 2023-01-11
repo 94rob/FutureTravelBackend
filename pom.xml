@@ -88,19 +88,9 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-</dependency>
-<dependency>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
