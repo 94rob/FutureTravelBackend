@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,9 +26,9 @@ public class RecordController {
     private ObjectMapper objectMapper;
 
     @GetMapping("/fetch")
-    public ResponseEntity<?> fetch(){
-        // String s = recordServiceImpl.fetch(); Serve per fetchare e inserire i dati istat nel db
-        return new ResponseEntity<>("", HttpStatus.OK);
+    public ResponseEntity<?> fetch() throws IOException {
+        recordServiceImpl.fetch(); //Serve per fetchare e inserire i dati istat nel db
+        return new ResponseEntity<>("Fatto", HttpStatus.OK);
     }
 
     @GetMapping("/cerca")

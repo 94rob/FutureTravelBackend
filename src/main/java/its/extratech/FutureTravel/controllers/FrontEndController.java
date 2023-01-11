@@ -209,8 +209,8 @@ public class FrontEndController {
                                                         @PathVariable("idProvincia") String idProvincia) throws JsonProcessingException {
         List<RecordDtoCompleto> recordDtoCompletoList =
                 startDate == null ? this.recordService.selAbsoluteDataByIdProvincia(idProvincia) :
-                        endDate == null ? this.recordService.selAbsoluteDataByIdProvincia(idProvincia, startDate) :
-                                this.recordService.selAbsoluteDataByIdProvincia(idProvincia, startDate, endDate);
+                        endDate == null ? this.recordService.selAbsoluteDataByIdProvincia(startDate, idProvincia) :
+                                this.recordService.selAbsoluteDataByIdProvincia(startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoCompletoList), HttpStatus.OK);
     }
 

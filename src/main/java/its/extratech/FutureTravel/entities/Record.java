@@ -32,6 +32,9 @@ public class Record {
     @Column(name = "ARRIVI")
     public int arrivi;
 
+    @Column(name = "FREQUENZA")
+    public char frequenza;
+
     @Override
     public String toString(){
         return "Contesto: " +
