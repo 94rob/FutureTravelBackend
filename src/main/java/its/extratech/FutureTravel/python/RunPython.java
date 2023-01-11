@@ -1,46 +1,45 @@
 package its.extratech.FutureTravel.python;
 
 
+import org.hamcrest.MatcherAssert;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
+
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
-import java.io.StringWriter;
+
+import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class RunPython {
 
-    String nome = "Fabrizio";
+    public void JSON() throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("Json.py"));
+        processBuilder.redirectErrorStream(true);
 
-    public void Hello() {
-        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            StringWriter output = new StringWriter();
-            pyInterp.setOut(output);
+        Process process = processBuilder.start();
+        List<String> results = readProcessOutput(process.getInputStream());
 
-            pyInterp.exec("print('Hello Baeldung Readers!!')");
-            assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
-                    .trim());
+        System.out.println(results);
+
+        MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
+        //MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
+
+        int exitCode = process.waitFor();
+        assertEquals("No errors should be detected", 0, exitCode);
+    }
+
+    private List<String> readProcessOutput(InputStream inputStream) throws IOException {
+        try (BufferedReader output = new BufferedReader(new InputStreamReader(inputStream))) {
+            return output.lines()
+                    .collect(Collectors.toList());
         }
     }
 
-    public void HelloPiuNome() {
-        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            StringWriter output = new StringWriter();
-            pyInterp.setOut(output);
-
-            pyInterp.exec("a=str(input(' '))\n" +
-                    "b=str('hello word')\n" +
-                    "print(a,b)");
-            assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
-                    .trim());
-        }
+    private String resolvePythonScriptPath(String filename) {
+        File file = new File("src/test/python/" + filename);
+        return file.getAbsolutePath();
     }
-
-    public void Somma() {
-        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            pyInterp.exec("x = 10+10");
-            PyObject x = pyInterp.get("x");
-            assertEquals(String.valueOf(20), x.asInt(), "x: ");
-        }
-    }
-
 }
