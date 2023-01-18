@@ -9,6 +9,9 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 
@@ -20,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.script.ScriptContext;
@@ -120,11 +125,39 @@ public class PythonTest {
             StringWriter output = new StringWriter();
             pyInterp.setOut(output);
 
-            pyInterp.exec("print('Hello Baeldung Readers!!')");
-            assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
+            pyInterp.exec("print('Hello " + this.nome +"')");
+            assertEquals("Should contain script output: ", "Hello Fabrizio", output.toString()
                     .trim());
         }
     }
+
+    @Test
+    public void JSON() {
+        Map<String, String> result;
+        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
+            StringWriter output = new StringWriter();
+            pyInterp.setOut(output);
+
+            pyInterp.exec("x =  '{\"Provincia\" : \"Caserta\",\"Tipo_alloggio\" : \"HOTELLIKE\",\"Residenza_clienti\" : \"IT\", \"Time\" : \"2008-01\", \"Presenze\" : \"12874\"}'\n" +
+                    "\n" +
+                    "print(x)\n");
+
+            System.out.println(output);
+
+
+            result = new ObjectMapper().readValue((output.toString()), HashMap.class);
+
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(result.toString());
+    }
+
+
+    //Prendere questo output.toString() e renderlo map(cercare come fare un array associativo)
 
     /*
     @Test
@@ -133,8 +166,8 @@ public class PythonTest {
             StringWriter output = new StringWriter();
             pyInterp.setOut(output);
 
-            pyInterp.exec("a=str(input(' '))\n" +
-                    "b=str('hello word')\n" +
+            pyInterp.exec("a=str(input(\" \"))\n" +
+                    "b=str(\"hello word\")\n" +
                     "print(a,b)");
             assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
                     .trim());

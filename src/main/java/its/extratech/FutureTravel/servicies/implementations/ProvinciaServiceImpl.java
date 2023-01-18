@@ -16,4 +16,9 @@ public class ProvinciaServiceImpl {
     public Provincia findById(String id) throws NoSuchElementException {
         return this.provinciaRepository.findById(id).get();
     }
+
+    public Provincia findByNomeProvincia (String nomeProvincia) throws NoSuchElementException
+    {
+        return this.provinciaRepository.findByNomeProvincia(nomeProvincia);
+    }
 }
