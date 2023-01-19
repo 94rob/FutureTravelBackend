@@ -168,7 +168,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
                                                                         @Param("startDate") String startDate,
                                                                         @Param("endDate") String endDate,
                                                                         @Param("idProvincia") String idProvincia);
-
     List<Record> findByTime(String time);
 
 }

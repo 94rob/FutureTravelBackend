@@ -48,26 +48,10 @@ public class PythonTest {
 
     String nome = "Fabrizio";
 
-/*
-    @Test
-    public void Hello() throws Exception {
-        StringWriter writer = new StringWriter();
-        ScriptContext context = new SimpleScriptContext();
-        context.setWriter(writer);
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("py");
-        System.out.println(manager);
-        System.out.println(engine);
-
-        engine.eval(new FileReader(resolvePythonScriptPath("Hello.py")), context);
-        assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", writer.toString().trim());
-    }*/
-    /*
 
     @Test
     public void Hallo() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("Hello.py"));
+        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("main.py"));
         processBuilder.redirectErrorStream(true);
 
         Process process = processBuilder.start();
@@ -76,28 +60,13 @@ public class PythonTest {
         System.out.println(results);
 
         MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
-        MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
+        //MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
 
         int exitCode = process.waitFor();
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
-    @Test
-    public void HalloPiuNome() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("HelloPiuNome.py"));
-        processBuilder.redirectErrorStream(true);
 
-        Process process = processBuilder.start();
-        List<String> results = readProcessOutput(process.getInputStream());
-
-        System.out.println(results);
-
-        MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
-        MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
-
-        int exitCode = process.waitFor();
-        assertEquals("No errors should be detected", 0, exitCode);
-    }
 
     @Test
     public void JSON() throws Exception {
@@ -116,7 +85,7 @@ public class PythonTest {
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
-     */
+
 
 
     @Test
@@ -130,7 +99,7 @@ public class PythonTest {
                     .trim());
         }
     }
-
+/*
     @Test
     public void JSON() {
         Map<String, String> result;
@@ -154,7 +123,7 @@ public class PythonTest {
         }
 
         System.out.println(result.toString());
-    }
+    }*/
 
 
     //Prendere questo output.toString() e renderlo map(cercare come fare un array associativo)
@@ -203,7 +172,7 @@ public class PythonTest {
     }
 
     private String resolvePythonScriptPath(String filename) {
-        File file = new File("src/test/python/" + filename);
+        File file = new File("src/test/python/Modelli_predittivi_regionale_e_provincia/" + filename);
         return file.getAbsolutePath();
     }
 

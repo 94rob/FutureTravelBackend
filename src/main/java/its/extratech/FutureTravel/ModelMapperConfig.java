@@ -34,6 +34,7 @@ public class ModelMapperConfig {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
             map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());
+            map().setTipodato(source.getTipodato());
         }
     };
 }

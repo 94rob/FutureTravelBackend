@@ -39,11 +39,13 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
     }
 
     @Test
@@ -58,12 +60,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
     }
 
     @Test
@@ -78,12 +82,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
     }
 
     @Test
@@ -98,12 +104,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").value("IT"))
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
     }
 
     @Test
@@ -118,12 +126,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].residenzaClienti").value("WRL_X_ITA"))
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
     }
 
     @Test
@@ -138,12 +148,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[0].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
                 .andExpect(jsonPath("$[500].provincia").exists())
                 .andExpect(jsonPath("$[500].provincia").value("ITF31"))
                 .andExpect(jsonPath("$[500].residenzaClienti").exists())
                 .andExpect(jsonPath("$[500].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[500].time").exists())
-                .andExpect(jsonPath("$[500].presenze").exists());
+                .andExpect(jsonPath("$[500].presenze").exists())
+                .andExpect(jsonPath("$[500].tipodato").exists());
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/fintech/provincia/ITF34")
                         .accept(MediaType.APPLICATION_JSON))

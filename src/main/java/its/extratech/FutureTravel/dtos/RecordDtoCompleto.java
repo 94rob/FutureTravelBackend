@@ -14,4 +14,5 @@ public class RecordDtoCompleto {
     public String time;
     public int arrivi;
     public int presenze;
+    public char tipodato;
 }
