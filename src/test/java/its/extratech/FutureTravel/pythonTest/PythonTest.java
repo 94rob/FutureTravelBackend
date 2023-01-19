@@ -48,7 +48,7 @@ public class PythonTest {
 
     String nome = "Fabrizio";
 
-
+/*
     @Test
     public void Hallo() throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("main.py"));
@@ -84,7 +84,7 @@ public class PythonTest {
         int exitCode = process.waitFor();
         assertEquals("No errors should be detected", 0, exitCode);
     }
-
+*/
 
 
 

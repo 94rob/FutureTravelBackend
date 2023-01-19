@@ -43,13 +43,17 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -67,13 +71,17 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -92,6 +100,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
@@ -99,7 +109,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].time").value("2021-01"))
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -115,13 +127,17 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -139,13 +155,17 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -164,6 +184,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
                 .andExpect(jsonPath("$[-1].tipoAlloggio").exists())
@@ -171,7 +193,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].time").value("2021-01"))
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -188,6 +212,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -195,7 +221,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -214,6 +242,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -221,7 +251,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("HOTELLIKE"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -241,6 +273,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -249,7 +283,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].time").value("2021-01"))
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -266,6 +302,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").exists())
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -273,7 +311,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -292,6 +332,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -299,7 +341,9 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].tipoAlloggio").value("OTHER"))
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 
     @Test
@@ -319,6 +363,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[0].time").value("2020-01"))
                 .andExpect(jsonPath("$[0].presenze").exists())
                 .andExpect(jsonPath("$[0].arrivi").exists())
+                .andExpect(jsonPath("$[0].tipodato").exists())
+                //.andExpect(jsonPath("$[0].tipodato").value("S"))
                 .andExpect(jsonPath("$[-1].provincia").exists())
                 .andExpect(jsonPath("$[-1].provincia").value("ITF32"))
                 .andExpect(jsonPath("$[-1].residenzaClienti").exists())
@@ -327,6 +373,8 @@ public class TipoAlloggioNotAggregateTest {
                 .andExpect(jsonPath("$[-1].time").exists())
                 .andExpect(jsonPath("$[-1].time").value("2021-01"))
                 .andExpect(jsonPath("$[-1].presenze").exists())
-                .andExpect(jsonPath("$[-1].arrivi").exists());
+                .andExpect(jsonPath("$[-1].arrivi").exists())
+                .andExpect(jsonPath("$[-1].tipodato").exists());
+        //.andExpect(jsonPath("$[-1].tipodato").value("S"));
     }
 }
