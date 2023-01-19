@@ -9,6 +9,9 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 
@@ -20,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.script.ScriptContext;
@@ -43,26 +48,10 @@ public class PythonTest {
 
     String nome = "Fabrizio";
 
-/*
-    @Test
-    public void Hello() throws Exception {
-        StringWriter writer = new StringWriter();
-        ScriptContext context = new SimpleScriptContext();
-        context.setWriter(writer);
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("py");
-        System.out.println(manager);
-        System.out.println(engine);
-
-        engine.eval(new FileReader(resolvePythonScriptPath("Hello.py")), context);
-        assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", writer.toString().trim());
-    }*/
-    /*
 
     @Test
     public void Hallo() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("Hello.py"));
+        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("main.py"));
         processBuilder.redirectErrorStream(true);
 
         Process process = processBuilder.start();
@@ -71,28 +60,13 @@ public class PythonTest {
         System.out.println(results);
 
         MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
-        MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
+        //MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
 
         int exitCode = process.waitFor();
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
-    @Test
-    public void HalloPiuNome() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("py", resolvePythonScriptPath("HelloPiuNome.py"));
-        processBuilder.redirectErrorStream(true);
 
-        Process process = processBuilder.start();
-        List<String> results = readProcessOutput(process.getInputStream());
-
-        System.out.println(results);
-
-        MatcherAssert.assertThat("Results should not be empty", results, is(not(empty())));
-        MatcherAssert.assertThat("Results should contain output of script: ", results, hasItem(containsString("Hello Baeldung Readers!!")));
-
-        int exitCode = process.waitFor();
-        assertEquals("No errors should be detected", 0, exitCode);
-    }
 
     @Test
     public void JSON() throws Exception {
@@ -111,7 +85,7 @@ public class PythonTest {
         assertEquals("No errors should be detected", 0, exitCode);
     }
 
-     */
+
 
 
     @Test
@@ -120,11 +94,39 @@ public class PythonTest {
             StringWriter output = new StringWriter();
             pyInterp.setOut(output);
 
-            pyInterp.exec("print('Hello Baeldung Readers!!')");
-            assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
+            pyInterp.exec("print('Hello " + this.nome +"')");
+            assertEquals("Should contain script output: ", "Hello Fabrizio", output.toString()
                     .trim());
         }
     }
+/*
+    @Test
+    public void JSON() {
+        Map<String, String> result;
+        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
+            StringWriter output = new StringWriter();
+            pyInterp.setOut(output);
+
+            pyInterp.exec("x =  '{\"Provincia\" : \"Caserta\",\"Tipo_alloggio\" : \"HOTELLIKE\",\"Residenza_clienti\" : \"IT\", \"Time\" : \"2008-01\", \"Presenze\" : \"12874\"}'\n" +
+                    "\n" +
+                    "print(x)\n");
+
+            System.out.println(output);
+
+
+            result = new ObjectMapper().readValue((output.toString()), HashMap.class);
+
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(result.toString());
+    }*/
+
+
+    //Prendere questo output.toString() e renderlo map(cercare come fare un array associativo)
 
     /*
     @Test
@@ -133,8 +135,8 @@ public class PythonTest {
             StringWriter output = new StringWriter();
             pyInterp.setOut(output);
 
-            pyInterp.exec("a=str(input(' '))\n" +
-                    "b=str('hello word')\n" +
+            pyInterp.exec("a=str(input(\" \"))\n" +
+                    "b=str(\"hello word\")\n" +
                     "print(a,b)");
             assertEquals("Should contain script output: ", "Hello Baeldung Readers!!", output.toString()
                     .trim());
@@ -170,7 +172,7 @@ public class PythonTest {
     }
 
     private String resolvePythonScriptPath(String filename) {
-        File file = new File("src/test/python/" + filename);
+        File file = new File("src/test/python/Modelli_predittivi_regionale_e_provincia/" + filename);
         return file.getAbsolutePath();
     }
 

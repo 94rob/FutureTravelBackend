@@ -154,10 +154,13 @@ public class XMLIstatReader {
                             importDataUtils.fromSeriesToRecordList(presenzeSeries));
 
                     // Aggiungo i Record di questo ciclo al listone che poi restituirò
-                    tempRecordList
+                    for (Record r :tempRecordList) {
+                        finalRecordList.add(r);
+                    }
+                    /*tempRecordList
                             .stream()
                             .map(finalRecordList::add);
-
+                    */
                     System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
             }
@@ -202,7 +205,7 @@ public class XMLIstatReader {
 
     public String createUrlForIstatApi(String paeseResidenzaClienti, String Itter107, String dati, String tipoEsercizio, String queryString){
         String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/";
-        url += "A" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
+        url += "M" + "."; // si riferisce alla frequenza, in questo caso M sta per mensile - il punto serve a distinguere i campi
         url += "551_553" + "."; // codice ATECO_2007 che identifica le strutture ricettive
         url += "N" + "."; // adjustment
         url += paeseResidenzaClienti + "."; // accetta come valori WORLD, ALL, IT, WRL_X_ITA (estero)
