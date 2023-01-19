@@ -1,14 +1,10 @@
 package its.extratech.FutureTravel.servicies.interfaces;
 
-import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
-import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
-import its.extratech.FutureTravel.entities.Contesto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.Record;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public interface RecordService {
 
@@ -26,15 +22,15 @@ public interface RecordService {
 
     List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza);
 
-    List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza, String startDate);
+    List<RecordDtoCompleto> selByIdResidenzaClienti(String idResidenza, String startDate);
 
-    List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza, String startDate, String endDate);
+    List<RecordDtoCompleto> selByIdResidenzaClienti(String idResidenza, String startDate, String endDate);
 
-    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String idProvincia);
+    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvincia(String idResidenza, String idProvincia);
 
-    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String startDate, String idProvincia);
+    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvincia(String idResidenza, String startDate, String idProvincia);
 
-    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String startDate, String endDate, String idProvincia);
+    List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvincia(String idResidenza, String startDate, String endDate, String idProvincia);
 
     List<RecordDtoCompleto> selByIdTipoAlloggioAbsFE(String idAlloggio);
 

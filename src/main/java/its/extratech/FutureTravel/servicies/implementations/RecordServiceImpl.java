@@ -1,12 +1,11 @@
 package its.extratech.FutureTravel.servicies.implementations;
 
-import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
-import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
+import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.importData.XMLIstatReader;
 import its.extratech.FutureTravel.repositories.RecordRepository;
-import its.extratech.FutureTravel.servicies.interfaces.RecordService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-public class RecordServiceImpl implements RecordService {
+public class RecordServiceImpl {
 
     @Autowired
     RecordRepository recordRepository;
@@ -38,215 +37,117 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio) {
-        return this.recordRepository.selByIdTipoAlloggio(idAlloggio)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    // Metodi di ricerca dati
+
+    public List<RecordDtoCompleto> selByIdResidenza(char tipoDato, String idResidenza, String startDate, String endDate) {
+        List<Record> list = recordRepository.selByIdResidenzaClienti(idResidenza);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate) {
-        return this.recordRepository.selByIdTipoAlloggioSinceDate(idAlloggio, startDate)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaByIdProvincia(char tipoDato, String idResidenza, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioFE(String idAlloggio, String startDate, String endDate) {
-        return this.recordRepository.selByIdTipoAlloggioBetweenTwoDates(idAlloggio, startDate, endDate)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAndIdAlloggio(char tipoDato, String idResidenza, String idAlloggio, String startDate, String endDate){
+        List<Record> list = recordRepository.selByIdResidenzaAndIdAlloggio(idResidenza, idAlloggio);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaFE(String idAlloggio, String idProvincia) {
-        return this.recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAndIdAlloggioByIdProvincia(char tipoDato, String idResidenza, String idAlloggio, String startDate, String endDate, String idProvincia){
+        List<Record> list = recordRepository.selByIdResidenzaAndIdAlloggioByProvincia(idResidenza, idAlloggio, idProvincia);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaFE(String idAlloggio, String startDate, String idProvincia) {
-        return this.recordRepository.selByIdTipoAlloggioAndByIdProvinciaSinceDate(idAlloggio, startDate, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAndAlloggioAll(char tipoDato, String idResidenza, String startDate, String endDate) {
+        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClienti(idResidenza));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaFE(String idAlloggio, String startDate, String endDate, String idProvincia) {
-        return this.recordRepository.selByIdTipoAlloggioAndByIdProvinciaBetweenTwoDates(idAlloggio, startDate, endDate, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAndAlloggioAllByProvincia(char tipoDato, String idResidenza, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza) {
-        return this.recordRepository.selByIdResidenzaClienti(idResidenza)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAll(char tipoDato, String startDate, String endDate) {
+        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selAllOrderedByTime());
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza, String startDate) {
-        return this.recordRepository.selByIdResidenzaClientiSinceDate(idResidenza, startDate)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdResidenzaAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdProvincia(idProvincia));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiFE(String idResidenza, String startDate, String endDate) {
-        return this.recordRepository.selByIdResidenzaClientiBetweenTwoDates(idResidenza, startDate, endDate)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdTipoAlloggioAndIdResidenzaAll(char tipoDato, String idAlloggio, String startDate, String endDate) {
+        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggio(idAlloggio));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String idProvincia) {
-        return this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdTipoAlloggioAndIdResidenzaAllByProvincia(char tipoDato, String idAlloggio, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String startDate, String idProvincia) {
-        return this.recordRepository.selByIdResidenzaClientiAndByIdProvinciaSinceDate(idResidenza, startDate, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByResidenzaAllAndAlloggioAll(char tipoDato, String startDate, String endDate){
+        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTime()));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaFE(String idResidenza, String startDate, String endDate, String idProvincia) {
-        return this.recordRepository.selByIdResidenzaClientiAndByIdProvinciaBetweenTwoDates(idResidenza, startDate, endDate, idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByResidenzaAllAndAlloggioAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia){
+        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia)));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAbsFE(String idAlloggio) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggio(idAlloggio))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selAll(char tipoDato, String startDate, String endDate) {
+        List<Record> list = this.recordRepository.selAllOrderedByTime();
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAbsFE(String idAlloggio, String startDate) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioSinceDate(idAlloggio, startDate))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.recordRepository.selByIdProvincia(idProvincia);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAbsFE(String idAlloggio, String startDate, String endDate) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioBetweenTwoDates(idAlloggio, startDate, endDate))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdTipoAlloggio(char tipoDato, String idAlloggio, String startDate, String endDate) {
+        List<Record> list = recordRepository.selByIdTipoAlloggio(idAlloggio);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaAbsFE(String idAlloggio, String idProvincia) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdTipoAlloggioByProvincia(char tipoDato, String idAlloggio, String startDate, String endDate, String idProvincia) {
+        List<Record> list = recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia);
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaAbsFE(String idAlloggio, String startDate, String idProvincia) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioAndByIdProvinciaSinceDate(idAlloggio, startDate, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdAlloggioAll(char tipoDato, String startDate, String endDate) {
+        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTime());
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdTipoAlloggioAndByIdProvinciaAbsFE(String idAlloggio, String startDate, String endDate, String idProvincia) {
-        return this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioAndByIdProvinciaBetweenTwoDates(idAlloggio, startDate, endDate, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
+    public List<RecordDtoCompleto> selByIdAlloggioAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
+        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia));
+        List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+        return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAbsFE(String idResidenza) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClienti(idResidenza))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAbsFE(String idResidenza, String startDate) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiSinceDate(idResidenza, startDate))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAbsFE(String idResidenza, String startDate, String endDate) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiBetweenTwoDates(idResidenza, startDate, endDate))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaAbsFE(String idResidenza, String idProvincia) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaAbsFE(String idResidenza, String startDate, String idProvincia) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiAndByIdProvinciaSinceDate(idResidenza, startDate, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByIdResidenzaClientiAndByIdProvinciaAbsFE(String idResidenza, String startDate, String endDate, String idProvincia) {
-        return this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiAndByIdProvinciaBetweenTwoDates(idResidenza, startDate, endDate, idProvincia))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteData(){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.findAll()))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteData(String startDate){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllSinceDate(startDate)))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteData(String startDate, String endDate){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllBetweenTwoDates(startDate, endDate)))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String idProvincia){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia)))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String startDate, String idProvincia){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvinciaSinceDate(startDate, idProvincia)))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selAbsoluteDataByIdProvincia(String startDate, String endDate, String idProvincia){
-        return this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvinciaBetweenTwoDates(startDate, endDate, idProvincia)))
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
+    // TODO eliminare FintechController e i metodi relativi?
 
     public List<RecordDtoPresenze> findAll() {
         return this.recordRepository.findAll()
@@ -283,24 +184,14 @@ public class RecordServiceImpl implements RecordService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecordDtoPresenze> selByIdResidenzaClienti(String idResidenzaClienti) {
+    public List<RecordDtoPresenze> selByIdResidenza(String idResidenzaClienti) {
         return this.recordRepository.selByIdResidenzaClienti(idResidenzaClienti)
                 .stream()
                 .map(this::fromRecordToRecordDtoPresenze)
                 .collect(Collectors.toList());
     }
 
-    public RecordDtoCompleto fromRecordToRecordDtoCompleto(Record record) {
-        return modelMapper.map(record, RecordDtoCompleto.class);
-    }
-
-    public RecordDtoPresenze fromRecordToRecordDtoPresenze(Record record) {
-        return modelMapper.map(record, RecordDtoPresenze.class);
-    }
-
-    public void save(Record record) {
-        this.recordRepository.save(record);
-    }
+    // Inserimento dati
 
     public void fetch() throws IOException {
         XMLIstatReader xmlIstatReader = new XMLIstatReader();
@@ -319,6 +210,54 @@ public class RecordServiceImpl implements RecordService {
             r.setContesto(contesto);
             this.save(r);
         }
+    }
+
+    public void save(Record record) {
+        this.recordRepository.save(record);
+    }
+
+
+    // Metodi interni
+
+    private List<RecordDtoCompleto> filterByTipoDatoAndReturnsRecordDtoCompleto(List<Record> list, char tipoDato){
+        return list
+                .stream()
+                .map(this::fromRecordToRecordDtoCompleto)
+                .filter(r -> r.getTipoDato() == tipoDato)
+                .collect(Collectors.toList());
+    }
+
+    private List<RecordDtoCompleto> filterByDate(List<RecordDtoCompleto> list, String startDate, String endDate){
+        if ((startDate == null) && (endDate == null)){
+            return list;
+        }
+        else if (startDate == null) {
+            return list.
+                    stream().
+                    filter(r -> this.timeStringToInt(r.getTime()) <= this.timeStringToInt(endDate)).
+                    collect(Collectors.toList());
+        }
+        else if (endDate == null){
+            return list.
+                    stream().
+                    filter(r -> this.timeStringToInt(r.getTime()) >= this.timeStringToInt(startDate)).
+                    collect(Collectors.toList());
+        }
+        else {
+            return list.
+                    stream().
+                    filter(r -> (this.timeStringToInt(r.getTime()) >= this.timeStringToInt(startDate)
+                            && this.timeStringToInt(r.getTime()) <= this.timeStringToInt(endDate))).
+                    collect(Collectors.toList());
+        }
+    }
+
+    private RecordDtoCompleto fromRecordToRecordDtoCompleto(Record record) {
+        return modelMapper.map(record, RecordDtoCompleto.class);
+    }
+
+    private RecordDtoPresenze fromRecordToRecordDtoPresenze(Record record) {
+        return modelMapper.map(record, RecordDtoPresenze.class);
     }
 
     public List<Record> collapseResidenzeClienti(List<Record> recordList){
@@ -377,6 +316,10 @@ public class RecordServiceImpl implements RecordService {
             }
         }
         return newList;
+    }
+
+    private int timeStringToInt(String time){
+        return Integer.parseInt(time.replace("-", ""));
     }
 
 }

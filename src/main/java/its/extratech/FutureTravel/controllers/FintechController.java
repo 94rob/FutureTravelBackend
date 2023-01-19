@@ -2,7 +2,7 @@ package its.extratech.FutureTravel.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
+import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,13 +41,13 @@ public class FintechController {
 
     @GetMapping("/it")
     public ResponseEntity<?> getByResidenzaClientiIt() throws JsonProcessingException {
-        List<RecordDtoPresenze> recordDtoPresenzeList = this.recordService.selByIdResidenzaClienti("IT");
+        List<RecordDtoPresenze> recordDtoPresenzeList = this.recordService.selByIdResidenza("IT");
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoPresenzeList), HttpStatus.OK);
     }
 
     @GetMapping("/estero")
     public ResponseEntity<?> getByResidenzaClientiEstero() throws JsonProcessingException {
-        List<RecordDtoPresenze> recordDtoPresenzeList = this.recordService.selByIdResidenzaClienti("WRL_X_ITA");
+        List<RecordDtoPresenze> recordDtoPresenzeList = this.recordService.selByIdResidenza("WRL_X_ITA");
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoPresenzeList), HttpStatus.OK);
     }
 

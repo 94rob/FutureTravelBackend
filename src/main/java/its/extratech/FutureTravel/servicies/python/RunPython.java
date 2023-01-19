@@ -70,7 +70,7 @@ public class RunPython {
         record.setContesto(contesto);
         record.setTime(result.get("Time"));
         record.setPresenze(Integer.parseInt(result.get("Presenze")));
-        record.setTipodato('P');
+        record.setTipoDato('P');
 
         System.out.println(record.toString());
 

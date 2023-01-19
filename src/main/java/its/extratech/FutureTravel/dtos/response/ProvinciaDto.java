@@ -1,4 +1,4 @@
-package its.extratech.FutureTravel.dtos;
+package its.extratech.FutureTravel.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

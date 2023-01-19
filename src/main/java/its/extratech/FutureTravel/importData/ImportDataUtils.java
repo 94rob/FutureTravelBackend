@@ -58,7 +58,7 @@ public class ImportDataUtils {
 
     public Document fromStringToXMLDocument(String s) throws IOException {
         Document doc = null;
-        BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\bruno\\OneDrive\\Desktop\\ITS\\Future-Travel\\FutureTravelBackend\\src\\main\\resources\\tmp\\file.xml"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\resources\\tmp\\file.xml"));
         writer.write(s);
         writer.close();
 

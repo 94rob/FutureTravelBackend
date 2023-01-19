@@ -34,7 +34,7 @@ public class Record {
 
 
     @Column(name = "TIPODATO")
-    public char tipodato;
+    public char tipoDato;
 
     @Override
     public String toString(){
@@ -45,7 +45,7 @@ public class Record {
                 "\n Mese: " + this.getTime() +
                 "\n Presenze: " + this.getPresenze() +
                 "\n Arrivi: " + this.getArrivi()+
-                "\n TipoDato: " + this.getTipodato();
+                "\n TipoDato: " + this.getTipoDato();
 
     }
 }

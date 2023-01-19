@@ -1,6 +1,5 @@
 package its.extratech.FutureTravel.serviceTests;
 
-import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.repositories.RecordRepository;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.List;
 
