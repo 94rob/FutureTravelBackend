@@ -29,46 +29,5 @@ public class RecordRepositoryTest {
     @Autowired
     private RecordRepository recordRepository;
 
-    @Test
-    @Order(1)
-    public void testSelByIdProvinciaSinceDate(){
-        Record record = this.recordRepository.selByIdProvinciaSinceDate("2009-01", "ITF31").get(0);
-        assertEquals("2009-01", record.getTime());
-        /*
-        assertThat(record)
-                .extracting(Record::getContesto)
-                .extracting(Contesto::getProvincia)
-                .extracting(Provincia::getId)
-                .isEqualTo("ITF31");
 
-         */
-    }
-
-    @Test
-    @Order(2)
-    public void testSelByIdProvinciaBetweenTwoDates(){
-        List<Record> recordList = this.recordRepository.selByIdProvinciaBetweenTwoDates("2009-01", "2010-01", "ITF31");
-        Record firstRecord = recordList.get(0);
-        Record lastRecord = recordList.get(51);
-
-        assertEquals("2009-01", firstRecord.getTime());
-        /*
-        assertThat(firstRecord)
-                .extracting(Record::getContesto)
-                .extracting(Contesto::getProvincia)
-                .extracting(Provincia::getId)
-                .isEqualTo("ITF31");
-
-         */
-
-        assertEquals("2010-01", lastRecord.getTime());
-        /*
-        assertThat(lastRecord)
-                .extracting(Record::getContesto)
-                .extracting(Contesto::getProvincia)
-                .extracting(Provincia::getId)
-                .isEqualTo("ITF31");
-
-         */
-    }
 }

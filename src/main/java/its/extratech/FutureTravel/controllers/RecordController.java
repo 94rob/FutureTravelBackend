@@ -2,7 +2,7 @@ package its.extratech.FutureTravel.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class RecordController {
 
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch() throws IOException {
-        recordServiceImpl.fetch(); //Serve per fetchare e inserire i dati istat nel db
+        //recordServiceImpl.fetch(); //Serve per fetchare e inserire i dati istat nel db
         return new ResponseEntity<>("Fatto", HttpStatus.OK);
     }
 
