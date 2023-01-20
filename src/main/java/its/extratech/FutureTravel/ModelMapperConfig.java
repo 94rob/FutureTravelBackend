@@ -1,7 +1,7 @@
 package its.extratech.FutureTravel;
 
-import its.extratech.FutureTravel.dtos.RecordDtoCompleto;
-import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
+import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.Record;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -34,7 +34,6 @@ public class ModelMapperConfig {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
             map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());
-            map().setTipodato(source.getTipodato());
         }
     };
 }

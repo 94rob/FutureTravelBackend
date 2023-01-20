@@ -1,4 +1,4 @@
-package its.extratech.FutureTravel.dtos;
+package its.extratech.FutureTravel.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +15,6 @@ public class RecordDtoPresenze {
     public String residenzaClienti;
     public String tipoAlloggio;
     public String time;
+    public char tipoDato;
     public int presenze;
 }

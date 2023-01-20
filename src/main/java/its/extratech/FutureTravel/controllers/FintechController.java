@@ -3,34 +3,17 @@ package its.extratech.FutureTravel.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import its.extratech.FutureTravel.dtos.RecordDtoPresenze;
-import its.extratech.FutureTravel.entities.*;
-import its.extratech.FutureTravel.entities.Record;
-import its.extratech.FutureTravel.servicies.implementations.*;
-import jakarta.validation.Valid;
+import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/fintech")
 public class FintechController {
-
-    @Autowired
-    TipoAlloggioServiceImpl tipoAlloggioService;
-
-    @Autowired
-    ProvinciaServiceImpl provinciaService;
-
-    @Autowired
-    ResidenzaClientiServiceImpl residenzaClientiService;
-
-    @Autowired
-    ContestoServiceImpl contestoService;
 
     @Autowired
     private RecordServiceImpl recordService;
@@ -80,28 +63,6 @@ public class FintechController {
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(recordDtoPresenzeList), HttpStatus.OK);
     }
 
-
-    @PostMapping("/upload")
-    public void  UploadJson(@Valid @RequestBody Record newRecord) throws JsonProcessingException {
-        Map<String, String> result;
-        result = new ObjectMapper().readValue((newRecord.toString()), HashMap.class);
-        Record record = new Record();
-
-        TipoAlloggio tipoAlloggio = this.tipoAlloggioService.findById(result.get("Tipo_alloggio"));
-        Provincia provincia = this.provinciaService.findByNomeProvincia(result.get("Provincia"));
-        ResidenzaClienti residenzaClienti = this.residenzaClientiService.findById(result.get("Residenza_clienti"));
-
-        Contesto contesto = this.contestoService.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
-
-        record.setContesto(contesto);
-        record.setTime(result.get("Time"));
-        record.setPresenze(Integer.parseInt(result.get("Presenze")));
-        record.setTipodato('P');
-
-        System.out.println(record);
-
-        //recordService.save(record);
-    }
 
 
 }
