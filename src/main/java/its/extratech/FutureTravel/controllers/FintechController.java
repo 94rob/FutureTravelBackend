@@ -98,7 +98,9 @@ public class FintechController {
         record.setPresenze(Integer.parseInt(result.get("Presenze")));
         record.setTipodato('P');
 
-        recordService.save(record);
+        System.out.println(record);
+
+        //recordService.save(record);
     }
 
 
