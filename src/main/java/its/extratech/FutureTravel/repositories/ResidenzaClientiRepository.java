@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ResidenzaClientiRepository extends JpaRepository<ResidenzaClienti, String> {
 
-    //ResidenzaClienti findByNome(String nomeProvincia);
+    ResidenzaClienti findByDescrizione(String descrizione);
 
 }

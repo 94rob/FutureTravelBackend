@@ -2,6 +2,7 @@ package its.extratech.FutureTravel.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import its.extratech.FutureTravel.dtos.request.FintechRequest;
 import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.servicies.implementations.*;
@@ -38,6 +39,9 @@ public class FintechController {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    FintechServiceImpl fintechService;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll() throws JsonProcessingException {
@@ -82,25 +86,11 @@ public class FintechController {
     }
 
     @PostMapping("/upload")
-    public void  UploadJson(@Valid @RequestBody Record newRecord) throws JsonProcessingException {
-        Map<String, String> result;
-        result = new ObjectMapper().readValue((newRecord.toString()), HashMap.class);
-        Record record = new Record();
+    public ResponseEntity<?>  UploadJson(@Valid @RequestBody List<FintechRequest> newRecord) throws JsonProcessingException {
 
-        TipoAlloggio tipoAlloggio = this.tipoAlloggioService.findById(result.get("Tipo_alloggio"));
-        Provincia provincia = this.provinciaService.findByNomeProvincia(result.get("Provincia"));
-        ResidenzaClienti residenzaClienti = this.residenzaClientiService.findById(result.get("Residenza_clienti"));
-
-        Contesto contesto = this.contestoService.findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
-
-        record.setContesto(contesto);
-        record.setTime(result.get("Time"));
-        record.setPresenze(Integer.parseInt(result.get("Presenze")));
-        record.setTipoDato('P');
-
-        System.out.println(record);
-
-        //recordService.save(record);
+        //fintechService.saveUpload(newRecord);
+        fintechService.saveListUpload(newRecord);
+        return new ResponseEntity<>(newRecord.toString(), HttpStatus.OK);
     }
 
 }

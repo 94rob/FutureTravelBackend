@@ -174,4 +174,14 @@ public class FintechControllerTest {
                 .andExpect(jsonPath("$[500].time").exists())
                 .andExpect(jsonPath("$[500].presenze").exists());
     }
+
+// TODO
+//    @Test
+//    public void testUpload() throws Exception{
+//        this.mockMvc.perform(MockMvcRequestBuilders.post("/fintech/upload/")
+//                        .content("[{provincia='Caserta', residenzaClienti='Italia', tipoAlloggio='HOTELLIKE', time='2022-01', presenze=9000}, FintechRequest{provincia='Caserta', residenzaClienti='Italia', tipoAlloggio='HOTELLIKE', time='2022-02', presenze=10000}]")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//
+//    }
+
 }

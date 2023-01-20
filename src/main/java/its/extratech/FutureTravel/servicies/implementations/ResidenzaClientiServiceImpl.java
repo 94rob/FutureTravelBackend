@@ -16,4 +16,8 @@ public class ResidenzaClientiServiceImpl {
     public ResidenzaClienti findById(String id) throws NoSuchElementException {
         return this.residenzaClientiRepository.findById(id).get();
     }
+
+    public ResidenzaClienti findByDescrizione(String descrizione) throws NoSuchElementException {
+        return this.residenzaClientiRepository.findByDescrizione(descrizione);
+    }
 }

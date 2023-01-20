@@ -1,5 +1,6 @@
 package its.extratech.FutureTravel;
 
+import its.extratech.FutureTravel.dtos.request.FintechRequest;
 import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
 import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.Record;
