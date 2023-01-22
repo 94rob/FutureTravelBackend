@@ -83,8 +83,13 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
                                                           @Param("idProvincia") String idProvincia);
     @Query(value = "SELECT * FROM STORICO s " +
             "ORDER BY s.TIME ASC; ", nativeQuery = true)
-    List<Record> selAllOrderedByTime();
+    List<Record> selAllOrderedByTimeAsc();
+
+    @Query(value = "SELECT * FROM STORICO s " +
+            "ORDER BY s.TIME DESC; ", nativeQuery = true)
+    List<Record> selAllOrderedByTimeDesc();
 
     List<Record> findByTime(String time);
+
 
 }

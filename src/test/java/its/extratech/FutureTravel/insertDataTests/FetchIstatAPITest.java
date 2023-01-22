@@ -3,12 +3,10 @@ package its.extratech.FutureTravel.insertDataTests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import its.extratech.FutureTravel.FutureTravelApplication;
 import its.extratech.FutureTravel.entities.Record;
-import its.extratech.FutureTravel.importData.*;
+import its.extratech.FutureTravel.fetchIstatData.*;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
