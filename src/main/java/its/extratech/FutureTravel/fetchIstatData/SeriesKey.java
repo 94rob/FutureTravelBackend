@@ -1,4 +1,4 @@
-package its.extratech.FutureTravel.importData;
+package its.extratech.FutureTravel.fetchIstatData;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

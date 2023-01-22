@@ -4,7 +4,7 @@ import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
 import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
-import its.extratech.FutureTravel.importData.XMLIstatReader;
+import its.extratech.FutureTravel.fetchIstatData.XMLIstatReader;
 import its.extratech.FutureTravel.repositories.RecordRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public class RecordServiceImpl {
     }
 
     public List<RecordDtoCompleto> selByIdResidenzaAll(char tipoDato, String startDate, String endDate) {
-        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selAllOrderedByTime());
+        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selAllOrderedByTimeAsc());
         List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
@@ -100,7 +100,7 @@ public class RecordServiceImpl {
     }
 
     public List<RecordDtoCompleto> selByResidenzaAllAndAlloggioAll(char tipoDato, String startDate, String endDate){
-        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTime()));
+        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTimeAsc()));
         List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
@@ -112,7 +112,7 @@ public class RecordServiceImpl {
     }
 
     public List<RecordDtoCompleto> selAll(char tipoDato, String startDate, String endDate) {
-        List<Record> list = this.recordRepository.selAllOrderedByTime();
+        List<Record> list = this.recordRepository.selAllOrderedByTimeAsc();
         List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
@@ -136,7 +136,7 @@ public class RecordServiceImpl {
     }
 
     public List<RecordDtoCompleto> selByIdAlloggioAll(char tipoDato, String startDate, String endDate) {
-        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTime());
+        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTimeAsc());
         List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
@@ -145,6 +145,11 @@ public class RecordServiceImpl {
         List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia));
         List<RecordDtoCompleto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
+    }
+
+    public String getLastDate(){
+        Record record = recordRepository.selAllOrderedByTimeDesc().get(0);
+        return record.getTime();
     }
 
     // TODO eliminare FintechController e i metodi relativi?
@@ -193,9 +198,14 @@ public class RecordServiceImpl {
 
     // Inserimento dati
 
-    public void fetch() throws IOException {
+    public void fetch(String date) throws IOException {
         XMLIstatReader xmlIstatReader = new XMLIstatReader();
-        List<Record> recordList = xmlIstatReader.fetch();
+        List<Record> recordList = xmlIstatReader.fetch(date);
+
+        if (recordList == null){
+            System.out.println("Nessun record da inserire");
+            return;
+        }
 
         for (Record r : recordList) {
             Provincia provincia = this.provinciaServiceImpl
@@ -208,6 +218,7 @@ public class RecordServiceImpl {
                     .findByProvinciaAndTipoAlloggioAndResidenzaClienti(provincia, tipoAlloggio, residenzaClienti);
 
             r.setContesto(contesto);
+            r.setTipoDato('S');
             this.save(r);
         }
     }

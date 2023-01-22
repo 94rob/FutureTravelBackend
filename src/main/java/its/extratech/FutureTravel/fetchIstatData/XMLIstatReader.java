@@ -1,4 +1,4 @@
-package its.extratech.FutureTravel.importData;
+package its.extratech.FutureTravel.fetchIstatData;
 
 
 import its.extratech.FutureTravel.entities.Record;
@@ -21,13 +21,13 @@ public class XMLIstatReader {
 
     public static ArrayList<String> province;
     public static ArrayList<String> residenzeClientiMensili;
-    public static ArrayList<String> residenzeClientiAnnuali;
     public static ArrayList<String> indicatori;
     public static ArrayList<String> tipologieEsercizi;
     public static ImportDataUtils importDataUtils;
 
     static {
         province = new ArrayList<>();
+        province.add("ITF3");
         province.add("ITF31");
         province.add("ITF32");
         province.add("ITF33");
@@ -37,71 +37,6 @@ public class XMLIstatReader {
         residenzeClientiMensili = new ArrayList<>();
         residenzeClientiMensili.add("IT");
         residenzeClientiMensili.add("WRL_X_ITA");
-
-        residenzeClientiAnnuali = new ArrayList<>();
-        residenzeClientiAnnuali.add("AFR_OTH");
-        residenzeClientiAnnuali.add("AFRMED");
-        residenzeClientiAnnuali.add("AME_C_S_OTH");
-        residenzeClientiAnnuali.add("AME_N_OTH");
-        residenzeClientiAnnuali.add("AR");
-        residenzeClientiAnnuali.add("ASI_OTH");
-        residenzeClientiAnnuali.add("ASI_W_OTH");
-        residenzeClientiAnnuali.add("AT");
-        residenzeClientiAnnuali.add("AU");
-        residenzeClientiAnnuali.add("BE");
-        residenzeClientiAnnuali.add("BG");
-        residenzeClientiAnnuali.add("BR");
-        residenzeClientiAnnuali.add("CA");
-        residenzeClientiAnnuali.add("CH_LI");
-        residenzeClientiAnnuali.add("CN");
-        residenzeClientiAnnuali.add("CY");
-        residenzeClientiAnnuali.add("CZ");
-        residenzeClientiAnnuali.add("DE");
-        residenzeClientiAnnuali.add("DK");
-        residenzeClientiAnnuali.add("EE");
-        residenzeClientiAnnuali.add("EG");
-        residenzeClientiAnnuali.add("ES");
-        residenzeClientiAnnuali.add("EU");
-        residenzeClientiAnnuali.add("EUR_NEU");
-        residenzeClientiAnnuali.add("EUR_OTH");
-        residenzeClientiAnnuali.add("FI");
-        residenzeClientiAnnuali.add("FR");
-        residenzeClientiAnnuali.add("GR");
-        residenzeClientiAnnuali.add("HR");
-        residenzeClientiAnnuali.add("HU");
-        residenzeClientiAnnuali.add("IE");
-        residenzeClientiAnnuali.add("IL");
-        residenzeClientiAnnuali.add("IN");
-        residenzeClientiAnnuali.add("IS");
-        residenzeClientiAnnuali.add("IT");
-        residenzeClientiAnnuali.add("JP");
-        residenzeClientiAnnuali.add("KR");
-        residenzeClientiAnnuali.add("LT");
-        residenzeClientiAnnuali.add("LU");
-        residenzeClientiAnnuali.add("LV");
-        residenzeClientiAnnuali.add("MT");
-        residenzeClientiAnnuali.add("MX");
-        residenzeClientiAnnuali.add("NL");
-        residenzeClientiAnnuali.add("NO");
-        residenzeClientiAnnuali.add("NZ");
-        residenzeClientiAnnuali.add("OCE_OTH");
-        residenzeClientiAnnuali.add("OTH");
-        residenzeClientiAnnuali.add("PL");
-        residenzeClientiAnnuali.add("PT");
-        residenzeClientiAnnuali.add("RO");
-        residenzeClientiAnnuali.add("RU");
-        residenzeClientiAnnuali.add("SE");
-        residenzeClientiAnnuali.add("SI");
-        residenzeClientiAnnuali.add("SK");
-        residenzeClientiAnnuali.add("TR");
-        residenzeClientiAnnuali.add("UK");
-        residenzeClientiAnnuali.add("US");
-        residenzeClientiAnnuali.add("VE");
-        residenzeClientiAnnuali.add("WORLD");
-        residenzeClientiAnnuali.add("WRL_X_EUR");
-        residenzeClientiAnnuali.add("WRL_X_ITA");
-        residenzeClientiAnnuali.add("ZA");
-
 
         indicatori = new ArrayList<>();
         indicatori.add("NI");
@@ -115,7 +50,7 @@ public class XMLIstatReader {
     }
 
 
-    public List<Record> fetch() throws IOException {
+    public List<Record> fetch(String date) throws IOException {
 
         Document documentPresenze;
         Document documentArrivi;
@@ -132,14 +67,18 @@ public class XMLIstatReader {
                     // eseguo la chiamata all'API istat, con i valori di questo ciclo; ne eseguo una per gli ARRIVI e una per le PRESENZE
                     // costruisco un URL e lo passo al metodo che effettua la chiamata, questo mi restituisce una stringa
                     // che poi trasformo in un Document per poterlo spacchettare
-                    documentPresenze = importDataUtils.
-                                            fromStringToXMLDocument(
-                                            fetchIstatApi(
-                                                    createUrlForIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "")));
-                    documentArrivi = importDataUtils.
-                                            fromStringToXMLDocument(
-                                            fetchIstatApi(
-                                                    createUrlForIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "")));
+                    String responsePresenze = this.fetchIstatApi(
+                            createUrlForIstatApi(residenzaClienti,provincia,"NI", tipologiaEsercizio, "startPeriod=" + date));
+                    String responseArrivi = this.fetchIstatApi(
+                            createUrlForIstatApi(residenzaClienti,provincia,"AR", tipologiaEsercizio, "startPeriod=" + date));
+
+                   if((responsePresenze.length() < 29) || (responseArrivi.length() < 29)){
+                        System.out.println("Nessun nuovo record");
+                        break;
+                    }
+
+                    documentPresenze = importDataUtils.fromStringToXMLDocument(responsePresenze);
+                    documentArrivi = importDataUtils.fromStringToXMLDocument(responseArrivi);
 
                     // trasformo i Document in Series, oggetti che ricalcano il modo in cui è costruito
                     // l'XML che l'API Istat mi ha restituito
@@ -157,15 +96,12 @@ public class XMLIstatReader {
                     for (Record r :tempRecordList) {
                         finalRecordList.add(r);
                     }
-                    /*tempRecordList
-                            .stream()
-                            .map(finalRecordList::add);
-                    */
                     System.out.println("N° record final list finora: " + finalRecordList.size());
                 }
             }
         }
         System.out.println("Finito di fetchare\nN° di record: " + finalRecordList.size());
+        this.importDataUtils.cleanFile();
         return finalRecordList;
 
     }
@@ -220,24 +156,23 @@ public class XMLIstatReader {
     }
 
     public String fetchIstatApi(String url) {
+        // setto l'HttpClient
+        HttpClient client = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
 
-            // setto l'HttpClient
-            HttpClient client = HttpClient.newBuilder()
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .build();
+        // setto l'HttpRequest
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .timeout(Duration.ofMinutes(2))
+                .header("Content-Type", "application/vnd.sdmx.genericdata+xml")
+                .GET()
+                .build();
 
-            // setto l'HttpRequest
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .timeout(Duration.ofMinutes(2))
-                    .header("Content-Type", "application/vnd.sdmx.genericdata+xml")
-                    .GET()
-                    .build();
+        // DEBUG
+        System.out.println(url);
 
-            // DEBUG
-            System.out.println(url);
-
-            // eseguo la richiesta HTTP
+        // eseguo la richiesta HTTP
         HttpResponse<String> response = null;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -292,6 +227,7 @@ public class XMLIstatReader {
                     sk.setTipoAlloggio(valuesElementList.get(6).getAttribute("value")); // TIPO_ESERCIZIO
                     sk.setResidenzaClienti(valuesElementList.get(3).getAttribute("value")); // RES_CLIENTI
 
+                    // Setto la SeriesKey nella Series
                     s.setSeriesKey(sk);
 
                     // Ora recupero tutte le Obs
@@ -326,12 +262,13 @@ public class XMLIstatReader {
                         }
                     }
 
+                    // Setto la ObsList nella Series
                     s.setObsList(obsList);
-                    series.add(s);
 
+                    // Aggiungo la Series alla lista
+                    series.add(s);
                 }
             }
-
         }
         return series;
     }
