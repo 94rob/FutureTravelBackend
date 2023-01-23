@@ -1,8 +1,6 @@
 package its.extratech.FutureTravel;
 
-import its.extratech.FutureTravel.dtos.request.FintechRequest;
-import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
-import its.extratech.FutureTravel.dtos.response.RecordDtoPresenze;
+import its.extratech.FutureTravel.dtos.response.RecordDto;
 import its.extratech.FutureTravel.entities.Record;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -16,21 +14,12 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.addMappings(recordPresenzeMapping);
         modelMapper.addMappings(recordCompletoMapping);
 
         return modelMapper;
     }
 
-    PropertyMap<Record, RecordDtoPresenze> recordPresenzeMapping = new PropertyMap<>() {
-        protected void configure() {
-            map().setProvincia(source.getContesto().getProvincia().getId());
-            map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
-            map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());
-        }
-    };
-
-    PropertyMap<Record, RecordDtoCompleto> recordCompletoMapping = new PropertyMap<>() {
+    PropertyMap<Record, RecordDto> recordCompletoMapping = new PropertyMap<>() {
         protected void configure() {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());

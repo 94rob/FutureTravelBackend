@@ -27,16 +27,16 @@ public class FutureTravelApplication {
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
-	public void setUpData() throws IOException {
+	public void setUpData(){
 		SetUp setUp = this.setUp();
+
 		try{
-			setUp.updateDataFromIstat();
+			boolean areDataUpdated = setUp.updateDataFromIstat();
+			if(areDataUpdated) setUp.updatePredictionModels();
+
 		} catch (IOException ex){
 			ex.printStackTrace();
 			System.out.println("Error occurred");
 		}
-
-		setUp.updatePredictionModels();
 	}
-
 }

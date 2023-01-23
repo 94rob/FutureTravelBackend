@@ -86,10 +86,13 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> selAllOrderedByTimeAsc();
 
     @Query(value = "SELECT * FROM STORICO s " +
+            "WHERE TIPODATO LIKE 'S' " +
             "ORDER BY s.TIME DESC; ", nativeQuery = true)
-    List<Record> selAllOrderedByTimeDesc();
+    List<Record> selAllOrderedByTimeDescWhereTipodatoLikeS();
 
     List<Record> findByTime(String time);
+
+    void deleteByTipoDato(char tipoDato);
 
 
 }

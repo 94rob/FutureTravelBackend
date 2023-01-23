@@ -33,3 +33,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Model data
+/ITF3
+/ITF31
+/ITF32
+/ITF33
+/ITF34
+/ITF35
