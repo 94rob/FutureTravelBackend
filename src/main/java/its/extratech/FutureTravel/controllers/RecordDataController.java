@@ -2,7 +2,7 @@ package its.extratech.FutureTravel.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import its.extratech.FutureTravel.dtos.response.RecordDtoCompleto;
+import its.extratech.FutureTravel.dtos.response.RecordDto;
 import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/{tipoDato}")
 public class RecordDataController {
 
@@ -26,7 +27,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaIt(@Param("startDate") String startDate,
                                               @Param("endDate") String endDate,
                                               @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenza(tipoDato, "IT", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenza(tipoDato, "IT", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -35,7 +36,7 @@ public class RecordDataController {
                                                          @Param("endDate") String endDate,
                                                          @PathVariable("idProvincia") String idProvincia,
                                                          @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaByIdProvincia(tipoDato, "IT", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaByIdProvincia(tipoDato, "IT", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -43,7 +44,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaItAndAlloggioHotellike(@Param("startDate") String startDate,
                                                                       @Param("endDate") String endDate,
                                                                   @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "IT", "HOTELLIKE", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "IT", "HOTELLIKE", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -52,7 +53,7 @@ public class RecordDataController {
                                                                                  @Param("endDate") String endDate,
                                                                                  @PathVariable("idProvincia") String idProvincia,
                                                                              @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "IT", "HOTELLIKE", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "IT", "HOTELLIKE", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -60,7 +61,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaItAndAlloggioOther(@Param("startDate") String startDate,
                                                                   @Param("endDate") String endDate,
                                                               @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "IT", "OTHER", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "IT", "OTHER", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -69,7 +70,7 @@ public class RecordDataController {
                                                                                  @Param("endDate") String endDate,
                                                                                  @PathVariable("idProvincia") String idProvincia,
                                                                          @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "IT", "OTHER", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "IT", "OTHER", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -77,7 +78,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaItAndAlloggioAll(@Param("startDate") String startDate,
                                                                 @Param("endDate") String endDate,
                                                             @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndAlloggioAll(tipoDato, "IT", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndAlloggioAll(tipoDato, "IT", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -86,7 +87,7 @@ public class RecordDataController {
                                                             @Param("endDate") String endDate,
                                                             @PathVariable("idProvincia") String idProvincia,
                                                                        @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndAlloggioAllByProvincia(tipoDato, "IT", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndAlloggioAllByProvincia(tipoDato, "IT", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -94,7 +95,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaEstero(@Param("startDate") String startDate,
                                                   @Param("endDate") String endDate,
                                                   @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenza(tipoDato, "WRL_X_ITA", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenza(tipoDato, "WRL_X_ITA", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -103,7 +104,7 @@ public class RecordDataController {
                                                              @Param("endDate") String endDate,
                                                              @PathVariable("idProvincia") String idProvincia,
                                                              @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaByIdProvincia(tipoDato, "WRL_X_ITA", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaByIdProvincia(tipoDato, "WRL_X_ITA", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -111,7 +112,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaEsteroAndAlloggioHotellike(@Param("startDate") String startDate,
                                                                       @Param("endDate") String endDate,
                                                                       @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "WRL_X_ITA", "HOTELLIKE", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "WRL_X_ITA", "HOTELLIKE", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -120,7 +121,7 @@ public class RecordDataController {
                                                                                  @Param("endDate") String endDate,
                                                                                  @PathVariable("idProvincia") String idProvincia,
                                                                                  @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "WRL_X_ITA", "HOTELLIKE", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "WRL_X_ITA", "HOTELLIKE", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -128,7 +129,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaEsteroAndAlloggioOther(@Param("startDate") String startDate,
                                                                   @Param("endDate") String endDate,
                                                                   @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "WRL_X_ITA", "OTHER", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggio(tipoDato, "WRL_X_ITA", "OTHER", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -137,7 +138,7 @@ public class RecordDataController {
                                                                              @Param("endDate") String endDate,
                                                                              @PathVariable("idProvincia") String idProvincia,
                                                                              @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "WRL_X_ITA", "OTHER", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndIdAlloggioByIdProvincia(tipoDato, "WRL_X_ITA", "OTHER", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -145,7 +146,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaEsteroAndAlloggioAll(@Param("startDate") String startDate,
                                                      @Param("endDate") String endDate,
                                                                 @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndAlloggioAll(tipoDato, "WRL_X_ITA", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAndAlloggioAll(tipoDato, "WRL_X_ITA", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -154,7 +155,7 @@ public class RecordDataController {
                                                                 @Param("endDate") String endDate,
                                                                 @PathVariable("idProvincia") String idProvincia,
                                                                            @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAndAlloggioAllByProvincia(tipoDato, "WRL_X_ITA", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAndAlloggioAllByProvincia(tipoDato, "WRL_X_ITA", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -162,7 +163,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaAll(@Param("startDate") String startDate,
                                                      @Param("endDate") String endDate,
                                                @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAll(tipoDato, startDate, endDate);
+        List<RecordDto> list = recordService.selByIdResidenzaAll(tipoDato, startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -171,7 +172,7 @@ public class RecordDataController {
                                                           @Param("endDate") String endDate,
                                                           @PathVariable("idProvincia") String idProvincia,
                                                           @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdResidenzaAllByProvincia(tipoDato, startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdResidenzaAllByProvincia(tipoDato, startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -179,7 +180,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaAllAndAlloggioHotellike(@Param("startDate") String startDate,
                                                            @Param("endDate") String endDate,
                                                                    @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAll(tipoDato, "HOTELLIKE", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAll(tipoDato, "HOTELLIKE", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -188,7 +189,7 @@ public class RecordDataController {
                                                                         @Param("endDate") String endDate,
                                                                         @PathVariable("idProvincia") String idProvincia,
                                                                                 @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAllByProvincia(tipoDato, "HOTELLIKE", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAllByProvincia(tipoDato, "HOTELLIKE", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -196,7 +197,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaAllAndAlloggioOther(@Param("startDate") String startDate,
                                                        @Param("endDate") String endDate,
                                                                @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAll(tipoDato, "OTHER", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAll(tipoDato, "OTHER", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -205,7 +206,7 @@ public class RecordDataController {
                                                                     @Param("endDate") String endDate,
                                                                     @PathVariable("idProvincia") String idProvincia,
                                                                             @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAllByProvincia(tipoDato, "OTHER", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioAndIdResidenzaAllByProvincia(tipoDato, "OTHER", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -213,7 +214,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByResidenzaAllAndAlloggioAll(@Param("startDate") String startDate,
                                              @Param("endDate") String endDate,
                                                              @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByResidenzaAllAndAlloggioAll(tipoDato, startDate, endDate);
+        List<RecordDto> list = recordService.selByResidenzaAllAndAlloggioAll(tipoDato, startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -222,7 +223,7 @@ public class RecordDataController {
                                                         @Param("endDate") String endDate,
                                                         @PathVariable("idProvincia") String idProvincia,
                                                                         @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByResidenzaAllAndAlloggioAllByProvincia(tipoDato, startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByResidenzaAllAndAlloggioAllByProvincia(tipoDato, startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -231,7 +232,7 @@ public class RecordDataController {
     public ResponseEntity<?> getAll(@Param("startDate") String startDate,
                                              @Param("endDate") String endDate,
                                     @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selAll(tipoDato, startDate, endDate);
+        List<RecordDto> list = recordService.selAll(tipoDato, startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -240,7 +241,7 @@ public class RecordDataController {
                                                         @Param("endDate") String endDate,
                                                         @PathVariable("idProvincia") String idProvincia,
                                                @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selAllByProvincia(tipoDato, startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selAllByProvincia(tipoDato, startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -248,7 +249,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByAlloggioHotellike(@Param("startDate") String startDate,
                                                         @Param("endDate") String endDate,
                                                     @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggio(tipoDato, "HOTELLIKE", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdTipoAlloggio(tipoDato, "HOTELLIKE", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -257,7 +258,7 @@ public class RecordDataController {
                                                                    @Param("endDate") String endDate,
                                                                    @PathVariable("idProvincia") String idProvincia,
                                                                @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioByProvincia(tipoDato, "HOTELLIKE", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioByProvincia(tipoDato, "HOTELLIKE", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -265,7 +266,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByAlloggioOther(@Param("startDate") String startDate,
                                                 @Param("endDate") String endDate,
                                                 @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggio(tipoDato, "OTHER", startDate, endDate);
+        List<RecordDto> list = recordService.selByIdTipoAlloggio(tipoDato, "OTHER", startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -274,7 +275,7 @@ public class RecordDataController {
                                                            @Param("endDate") String endDate,
                                                            @PathVariable("idProvincia") String idProvincia,
                                                            @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdTipoAlloggioByProvincia(tipoDato, "OTHER", startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdTipoAlloggioByProvincia(tipoDato, "OTHER", startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -282,7 +283,7 @@ public class RecordDataController {
     public ResponseEntity<?> getByAlloggioAll(@Param("startDate") String startDate,
                                               @Param("endDate") String endDate,
                                               @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdAlloggioAll(tipoDato, startDate, endDate);
+        List<RecordDto> list = recordService.selByIdAlloggioAll(tipoDato, startDate, endDate);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
@@ -291,7 +292,7 @@ public class RecordDataController {
                                                          @Param("endDate") String endDate,
                                                          @PathVariable("idProvincia") String idProvincia,
                                                          @PathVariable("tipoDato") char tipoDato) throws JsonProcessingException {
-        List<RecordDtoCompleto> list = recordService.selByIdAlloggioAllByProvincia(tipoDato, startDate, endDate, idProvincia);
+        List<RecordDto> list = recordService.selByIdAlloggioAllByProvincia(tipoDato, startDate, endDate, idProvincia);
         return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
