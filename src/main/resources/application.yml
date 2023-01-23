@@ -13,7 +13,7 @@ spring:
       platform: mariadb
   datasource:
     password: futuretravel
-    url: jdbc:mysql://localhost:3306/future_travel?createDatabaseIfNotExist=true&autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:3306/future_travel?createDatabaseIfNotExist=true&autoReconnect=true
     username: futuretravel
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:

@@ -1,22 +1,13 @@
 package its.extratech.FutureTravel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import its.extratech.FutureTravel.servicies.implementations.RecordServiceImpl;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 @SpringBootApplication
 public class FutureTravelApplication {
@@ -36,9 +27,15 @@ public class FutureTravelApplication {
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
-	public void doSomethingAfterStartup() throws IOException {
+	public void setUpData() throws IOException {
 		SetUp setUp = this.setUp();
-		setUp.fetchIstatApi();
+		try{
+			setUp.updateDataFromIstat();
+		} catch (IOException ex){
+			ex.printStackTrace();
+			System.out.println("Error occurred");
+		}
+
 		setUp.updatePredictionModels();
 	}
 

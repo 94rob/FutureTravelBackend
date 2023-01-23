@@ -13,12 +13,12 @@ public class SetUpTest {
 
     @Test
     public void stringToNextMonthTest(){
-        Assertions.assertEquals("2008-02", setUp.stringToNextMonth("2008-01"));
+        Assertions.assertEquals("2008-02", setUp.considerNextMonth("2008-01"));
     }
 
     @Test
     public void stringToNextMonthTest2(){
-        Assertions.assertEquals("2009-01", setUp.stringToNextMonth("2008-12"));
+        Assertions.assertEquals("2009-01", setUp.considerNextMonth("2008-12"));
     }
 
 }

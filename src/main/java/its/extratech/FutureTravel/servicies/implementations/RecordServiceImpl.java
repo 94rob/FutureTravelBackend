@@ -148,52 +148,13 @@ public class RecordServiceImpl {
     }
 
     public String getLastDate(){
-        Record record = recordRepository.selAllOrderedByTimeDesc().get(0);
-        return record.getTime();
-    }
+        try{
+            Record record = recordRepository.selAllOrderedByTimeDesc().get(0);
+            return record.getTime();
+        } catch (Exception ex){
+            return "";
+        }
 
-    // TODO eliminare FintechController e i metodi relativi?
-
-    public List<RecordDtoPresenze> findAll() {
-        return this.recordRepository.findAll()
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoPresenze> findByTime(String time) {
-        return this.recordRepository.findByTime(time)
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoPresenze> selByIdProvincia(String idProvincia) {
-        return this.recordRepository.selByIdProvincia(idProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoCompleto> selByNomeProvincia(String nomeProvincia) {
-        return this.recordRepository.selByNomeProvincia(nomeProvincia)
-                .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoPresenze> selByIdTipoAlloggio(String idAlloggio) {
-        return this.recordRepository.selByIdTipoAlloggio(idAlloggio)
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
-    }
-
-    public List<RecordDtoPresenze> selByIdResidenza(String idResidenzaClienti) {
-        return this.recordRepository.selByIdResidenzaClienti(idResidenzaClienti)
-                .stream()
-                .map(this::fromRecordToRecordDtoPresenze)
-                .collect(Collectors.toList());
     }
 
     // Inserimento dati
