@@ -1,3 +1,6 @@
-From openjdk:17
-copy ./target/employee-jdbc-0.0.1-SNAPSHOT.jar employee-jdbc-0.0.1-SNAPSHOT.jar
-CMD ["java","-jar","employee-jdbc-0.0.1-SNAPSHOT.jar"]
+FROM openjdk:17-jdk-alpine
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+ARG JAR_FILE=./FutureTravelApp.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
