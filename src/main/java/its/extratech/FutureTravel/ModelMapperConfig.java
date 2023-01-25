@@ -13,17 +13,21 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.addMappings(recordCompletoMapping);
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true);
+        modelMapper.addMappings(recordToRecordDtoMapping);
 
         return modelMapper;
     }
 
-    PropertyMap<Record, RecordDto> recordCompletoMapping = new PropertyMap<>() {
+    PropertyMap<Record, RecordDto> recordToRecordDtoMapping = new PropertyMap<>() {
         protected void configure() {
             map().setProvincia(source.getContesto().getProvincia().getId());
             map().setTipoAlloggio(source.getContesto().getTipoAlloggio().getId());
             map().setResidenzaClienti(source.getContesto().getResidenzaClienti().getId());
         }
     };
+
+
+
 }

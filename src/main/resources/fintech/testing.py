@@ -19,7 +19,7 @@ def testing(df: pd.DataFrame):
 
                 df_train = df_train.set_index(pd.DatetimeIndex(df_train['TIME'], freq='MS'))
 
-                modello = load_forecaster(f'./{provincia}/{tipo}/{paesi}.py')
+                modello = load_forecaster(f'./prediction-models/{provincia}/{tipo}/{paesi}.py')
                 pred = modello.predict(steps=24)
 
                 # plt.figure(figsize=(12, 8))

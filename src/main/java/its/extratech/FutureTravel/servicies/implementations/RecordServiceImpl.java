@@ -5,18 +5,17 @@ import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.fetchIstatData.XMLIstatReader;
 import its.extratech.FutureTravel.repositories.RecordRepository;
+import its.extratech.FutureTravel.servicies.interfaces.IRecordService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-public class RecordServiceImpl {
+public class RecordServiceImpl implements IRecordService {
 
     @Autowired
     RecordRepository recordRepository;
@@ -38,115 +37,76 @@ public class RecordServiceImpl {
 
     // Metodi di ricerca dati
 
-    public List<RecordDto> selByIdResidenza(char tipoDato, String idResidenza, String startDate, String endDate) {
-        List<Record> list = recordRepository.selByIdResidenzaClienti(idResidenza);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+    public List<RecordDto> getByResidenzaAndAlloggio(char tipoDato, String idResidenza, String idAlloggio, String startDate, String endDate){
+        List<Record> list;
+        List<RecordDto> recordList;
+
+        if(Objects.equals(idResidenza, "ALL")){
+            idResidenza = "WORLD";
+        }
+
+        // residenza whatever , alloggio whatever
+        if((Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selAllOrderedByTimeAsc();
+        }
+
+        // residenza whatever
+        else if((Objects.equals(idResidenza, "whatever")) && (!Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selByIdAlloggio(idAlloggio);
+        }
+
+        // alloggio whatever
+        else if((!Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selByIdResidenza(idResidenza);
+        }
+
+        //
+        else {
+            list = recordRepository.selByIdResidenzaAndIdAlloggio(idResidenza, idAlloggio);
+        }
+
+        recordList = filterByTipoDatoAndReturnsRecordDto(list, tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDto> selByIdResidenzaByIdProvincia(char tipoDato, String idResidenza, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
+    public List<RecordDto> getByResidenzaAndAlloggioByProvincia(char tipoDato, String idResidenza, String idAlloggio, String idProvincia, String startDate, String endDate){
+        List<Record> list;
+        List<RecordDto> recordList;
+
+        if(Objects.equals(idResidenza, "ALL")){
+            idResidenza = "WORLD";
+        }
+
+        // residenza whatever , alloggio whatever
+        if((Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selByIdProvincia(idProvincia);
+        }
+
+        // residenza whatever
+        else if((Objects.equals(idResidenza, "whatever")) && (!Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selByIdAlloggioAndByIdProvincia(idAlloggio, idProvincia);
+        }
+
+        // alloggio whatever
+        else if((!Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
+            list = recordRepository.selByIdResidenzaAndByIdProvincia(idResidenza, idProvincia);
+        }
+
+        //
+        else {
+            list = recordRepository.selByIdResidenzaAndIdAlloggioByProvincia(idResidenza, idAlloggio, idProvincia);
+        }
+
+        recordList = filterByTipoDatoAndReturnsRecordDto(list, tipoDato);
         return this.filterByDate(recordList, startDate, endDate);
     }
 
-    public List<RecordDto> selByIdResidenzaAndIdAlloggio(char tipoDato, String idResidenza, String idAlloggio, String startDate, String endDate){
-        List<Record> list = recordRepository.selByIdResidenzaAndIdAlloggio(idResidenza, idAlloggio);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdResidenzaAndIdAlloggioByIdProvincia(char tipoDato, String idResidenza, String idAlloggio, String startDate, String endDate, String idProvincia){
-        List<Record> list = recordRepository.selByIdResidenzaAndIdAlloggioByProvincia(idResidenza, idAlloggio, idProvincia);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdResidenzaAndAlloggioAll(char tipoDato, String idResidenza, String startDate, String endDate) {
-        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClienti(idResidenza));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdResidenzaAndAlloggioAllByProvincia(char tipoDato, String idResidenza, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdResidenzaClientiAndByIdProvincia(idResidenza, idProvincia));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdResidenzaAll(char tipoDato, String startDate, String endDate) {
-        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selAllOrderedByTimeAsc());
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdResidenzaAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdProvincia(idProvincia));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdTipoAlloggioAndIdResidenzaAll(char tipoDato, String idAlloggio, String startDate, String endDate) {
-        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggio(idAlloggio));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdTipoAlloggioAndIdResidenzaAllByProvincia(char tipoDato, String idAlloggio, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.collapseResidenzeClienti(this.recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByResidenzaAllAndAlloggioAll(char tipoDato, String startDate, String endDate){
-        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTimeAsc()));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByResidenzaAllAndAlloggioAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia){
-        List<Record> list = this.collapseResidenzeClienti(this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia)));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selAll(char tipoDato, String startDate, String endDate) {
+    public List<RecordDto> getAllByTipoDato(char tipoDato){
         List<Record> list = this.recordRepository.selAllOrderedByTimeAsc();
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
+        return filterByTipoDatoAndReturnsRecordDto(list , tipoDato);
     }
 
-    public List<RecordDto> selAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.recordRepository.selByIdProvincia(idProvincia);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdTipoAlloggio(char tipoDato, String idAlloggio, String startDate, String endDate) {
-        List<Record> list = recordRepository.selByIdTipoAlloggio(idAlloggio);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdTipoAlloggioByProvincia(char tipoDato, String idAlloggio, String startDate, String endDate, String idProvincia) {
-        List<Record> list = recordRepository.selByIdTipoAlloggioAndByIdProvincia(idAlloggio, idProvincia);
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdAlloggioAll(char tipoDato, String startDate, String endDate) {
-        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selAllOrderedByTimeAsc());
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public List<RecordDto> selByIdAlloggioAllByProvincia(char tipoDato, String startDate, String endDate, String idProvincia) {
-        List<Record> list = this.collapseTipoAlloggio(this.recordRepository.selByIdProvincia(idProvincia));
-        List<RecordDto> recordList = filterByTipoDatoAndReturnsRecordDtoCompleto(list , tipoDato);
-        return this.filterByDate(recordList, startDate, endDate);
-    }
-
-    public String getLastDateRegisteredInIstatData(){
+    public String getLastDateRegistered(){
         try{
             Record record = recordRepository.selAllOrderedByTimeDescWhereTipodatoLikeS().get(0);
             return record.getTime();
@@ -156,13 +116,13 @@ public class RecordServiceImpl {
 
     }
 
-    // Inserimento dati
+    // Metodi di inserimento dati
 
-    public boolean fetch(String date) throws IOException {
+    public boolean fetchIstatApiAndSaveData(String date) throws IOException {
         XMLIstatReader xmlIstatReader = new XMLIstatReader();
         List<Record> recordList = xmlIstatReader.fetch(date);
 
-        if (recordList == null){
+        if ((recordList == null)||(recordList.isEmpty())){
             System.out.println("Nessun record da inserire");
             return false;
         }
@@ -191,10 +151,10 @@ public class RecordServiceImpl {
 
     // Metodi interni
 
-    private List<RecordDto> filterByTipoDatoAndReturnsRecordDtoCompleto(List<Record> list, char tipoDato){
+    private List<RecordDto> filterByTipoDatoAndReturnsRecordDto(List<Record> list, char tipoDato){
         return list
                 .stream()
-                .map(this::fromRecordToRecordDtoCompleto)
+                .map(this::fromRecordToRecordDto)
                 .filter(r -> r.getTipoDato() == tipoDato)
                 .collect(Collectors.toList());
     }
@@ -224,66 +184,8 @@ public class RecordServiceImpl {
         }
     }
 
-    private RecordDto fromRecordToRecordDtoCompleto(Record record) {
+    private RecordDto fromRecordToRecordDto(Record record) {
         return modelMapper.map(record, RecordDto.class);
-    }
-
-    public List<Record> collapseResidenzeClienti(List<Record> recordList){
-        List<Record> newList = new ArrayList<>();
-        Record newR;
-
-        for(int i = 0; i < recordList.size() - 1; i++){
-            boolean flag = false;
-            for(int j = i + 1; j < recordList.size(); j++){
-                if((Objects.equals(recordList.get(i).getContesto().getTipoAlloggio().getId(), recordList.get(j).getContesto().getTipoAlloggio().getId())) &&
-                        (Objects.equals(recordList.get(i).getContesto().getProvincia().getId(), recordList.get(j).getContesto().getProvincia().getId())) &&
-                        (Objects.equals(recordList.get(i).getTime(), recordList.get(j).getTime()))){
-
-                    newR = recordList.get(i);
-                    newR.setPresenze(recordList.get(i).getPresenze() + recordList.get(j).getPresenze());
-                    newR.setArrivi(recordList.get(i).getArrivi() + recordList.get(j).getArrivi());
-                    newR.getContesto().getResidenzaClienti().setId("ALL");
-                    newR.getContesto().getResidenzaClienti().setDescrizione("ALL");
-                    newList.add(newR);
-                    recordList.remove(j);
-                    flag = true;
-                }
-            }
-            if(!flag){
-                newR = recordList.get(i);
-                newList.add(newR);
-            }
-        }
-        return newList;
-    }
-
-    public List<Record> collapseTipoAlloggio(List<Record> recordList){
-        List<Record> newList = new ArrayList<>();
-        Record newR;
-
-        for(int i = 0; i < recordList.size() - 1; i++){
-            boolean flag = false;
-            for(int j = i + 1; j < recordList.size(); j++){
-                if((Objects.equals(recordList.get(i).getContesto().getResidenzaClienti().getId(), recordList.get(j).getContesto().getResidenzaClienti().getId())) &&
-                        (Objects.equals(recordList.get(i).getContesto().getProvincia().getId(), recordList.get(j).getContesto().getProvincia().getId())) &&
-                        (Objects.equals(recordList.get(i).getTime(), recordList.get(j).getTime()))){
-
-                    newR = recordList.get(i);
-                    newR.setPresenze(recordList.get(i).getPresenze() + recordList.get(j).getPresenze());
-                    newR.setArrivi(recordList.get(i).getArrivi() + recordList.get(j).getArrivi());
-                    newR.getContesto().getTipoAlloggio().setId("ALL");
-                    newR.getContesto().getTipoAlloggio().setDescrizione("ALL");
-                    newList.add(newR);
-                    recordList.remove(j);
-                    flag = true;
-                }
-            }
-            if(!flag){
-                newR = recordList.get(i);
-                newList.add(newR);
-            }
-        }
-        return newList;
     }
 
     private int timeStringToInt(String time){
