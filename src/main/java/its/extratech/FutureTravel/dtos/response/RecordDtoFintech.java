@@ -15,7 +15,7 @@ public class RecordDtoFintech {
     public String ISO;
     public String indicatori;
     public String TIME;
-    public String Value;
+    public int Value;
 
     @JsonProperty("ITTER107")
     public String getITTER107() {
@@ -43,7 +43,7 @@ public class RecordDtoFintech {
     }
 
     @JsonProperty("Value")
-    public String getValue() {
+    public int getValue() {
         return Value;
     }
 }

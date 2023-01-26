@@ -42,7 +42,6 @@ public class XMLIstatReader {
         residenzeClientiMensili = new ArrayList<>();
         residenzeClientiMensili.add("IT");
         residenzeClientiMensili.add("WRL_X_ITA");
-        residenzeClientiMensili.add("WORLD");
 
         indicatori = new ArrayList<>();
         indicatori.add("NI");
@@ -51,7 +50,6 @@ public class XMLIstatReader {
         tipologieEsercizi = new ArrayList<>();
         tipologieEsercizi.add("HOTELLIKE");
         tipologieEsercizi.add("OTHER");
-        tipologieEsercizi.add("ALL");
     }
 
     public List<Record> fetch(String date) throws IOException {

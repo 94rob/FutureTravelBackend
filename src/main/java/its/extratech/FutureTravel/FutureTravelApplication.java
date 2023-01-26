@@ -27,6 +27,7 @@ public class FutureTravelApplication {
 	}
 
 
+
 	@EventListener(ApplicationReadyEvent.class)
 	public void setUpData(){
 		SetUp setUp = this.setUp();
@@ -40,6 +41,8 @@ public class FutureTravelApplication {
 			System.out.println("Error occurred");
 		}
 	}
+
+
 
 
 }

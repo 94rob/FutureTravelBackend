@@ -37,7 +37,7 @@ public class ModelMapperConfig {
             map().setISO(source.getContesto().getResidenzaClienti().getId());
             map().setTIME(source.getTime());
             map().setIndicatori("presenze");
-            map().setValue(Integer.toString(source.getPresenze()));
+            map().setValue(source.getPresenze());
         }
     };
 
