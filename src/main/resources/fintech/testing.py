@@ -41,14 +41,30 @@ def testing(df: pd.DataFrame):
 
 
 if __name__ == '__main__':
-    df = pd.read_json('./src/main/resources/fintech/dataset/dataset_con_sostituzione.json', orient='record')
 
-    df = df.drop(['Flag Codes', 'Flags'], axis=1)
+    y = requests.get("http://localhost:8085/gruppo8/fintech/getall")
+    with open('./src/main/resources/fintech/dataset/dataset.json', 'w') as f:
+        json.dump(y.json(), f)
 
+    df = pd.read_json('./src/main/resources/fintech/dataset/dataset.json', orient='record')
+    #df = df.drop(['Flag Codes', 'Flags'], axis=1)
+
+    #creazione_modelli(df)
     dict = testing(df)
 
     url = 'http://localhost:8085/gruppo8/fintech/upload'
 
     x = requests.post(url, json = dict)
-
     print(x.text)
+
+    #df = pd.read_json('./src/main/resources/fintech/dataset/dataset_con_sostituzione.json', orient='record')
+
+    #df = df.drop(['Flag Codes', 'Flags'], axis=1)
+
+    #dict = testing(df)
+
+    #url = 'http://localhost:8085/gruppo8/fintech/upload'
+
+    #x = requests.post(url, json = dict)
+
+    #print(x.text)

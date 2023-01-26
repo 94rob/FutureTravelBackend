@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,10 +42,6 @@ public class RecordServiceImpl implements IRecordService {
         List<Record> list;
         List<RecordDto> recordList;
 
-        if(Objects.equals(idResidenza, "ALL")){
-            idResidenza = "WORLD";
-        }
-
         // residenza whatever , alloggio whatever
         if((Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
             list = recordRepository.selAllOrderedByTimeAsc();
@@ -52,17 +49,39 @@ public class RecordServiceImpl implements IRecordService {
 
         // residenza whatever
         else if((Objects.equals(idResidenza, "whatever")) && (!Objects.equals(idAlloggio, "whatever"))) {
-            list = recordRepository.selByIdAlloggio(idAlloggio);
+
+            list = Objects.equals(idAlloggio, "ALL")
+                    ?
+                    collapseTipoAlloggio(recordRepository.selAllOrderedByTimeAsc())
+                    :
+                    recordRepository.selByIdAlloggio(idAlloggio);
         }
 
         // alloggio whatever
         else if((!Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
-            list = recordRepository.selByIdResidenza(idResidenza);
+            list = (Objects.equals(idResidenza, "ALL"))
+                    ?
+                    collapseResidenzeClienti(recordRepository.selAllOrderedByTimeAsc())
+                    :
+                    recordRepository.selByIdResidenza(idResidenza);
         }
 
-        //
         else {
-            list = recordRepository.selByIdResidenzaAndIdAlloggio(idResidenza, idAlloggio);
+            if((Objects.equals(idAlloggio, "ALL")) && (Objects.equals(idResidenza, "ALL"))){
+                list = collapseResidenzeClienti(collapseTipoAlloggio(recordRepository.selAllOrderedByTimeAsc()));
+            }
+
+            else if (Objects.equals(idAlloggio, "ALL")){
+                list = collapseTipoAlloggio(recordRepository.selByIdResidenza(idResidenza));
+            }
+
+            else if (Objects.equals(idResidenza, "ALL")){
+                list = collapseResidenzeClienti(recordRepository.selByIdAlloggio(idAlloggio));
+            }
+
+            else {
+                list = recordRepository.selByIdResidenzaAndIdAlloggio(idResidenza, idAlloggio);
+            }
         }
 
         recordList = filterByTipoDatoAndReturnsRecordDto(list, tipoDato);
@@ -73,10 +92,6 @@ public class RecordServiceImpl implements IRecordService {
         List<Record> list;
         List<RecordDto> recordList;
 
-        if(Objects.equals(idResidenza, "ALL")){
-            idResidenza = "WORLD";
-        }
-
         // residenza whatever , alloggio whatever
         if((Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
             list = recordRepository.selByIdProvincia(idProvincia);
@@ -84,17 +99,39 @@ public class RecordServiceImpl implements IRecordService {
 
         // residenza whatever
         else if((Objects.equals(idResidenza, "whatever")) && (!Objects.equals(idAlloggio, "whatever"))) {
-            list = recordRepository.selByIdAlloggioAndByIdProvincia(idAlloggio, idProvincia);
+
+            list = (Objects.equals(idAlloggio, "ALL"))
+                    ?
+                    collapseTipoAlloggio(recordRepository.selByIdProvincia(idProvincia))
+                    :
+                    recordRepository.selByIdAlloggioAndByIdProvincia(idAlloggio, idProvincia);
         }
 
         // alloggio whatever
         else if((!Objects.equals(idResidenza, "whatever")) && (Objects.equals(idAlloggio, "whatever"))) {
-            list = recordRepository.selByIdResidenzaAndByIdProvincia(idResidenza, idProvincia);
+            list = (Objects.equals(idResidenza, "ALL"))
+                    ?
+                    collapseResidenzeClienti(recordRepository.selByIdProvincia(idProvincia))
+                    :
+                    recordRepository.selByIdResidenzaAndByIdProvincia(idResidenza, idProvincia);
         }
 
-        //
         else {
-            list = recordRepository.selByIdResidenzaAndIdAlloggioByProvincia(idResidenza, idAlloggio, idProvincia);
+            if((Objects.equals(idAlloggio, "ALL")) && (Objects.equals(idResidenza, "ALL"))){
+                list = collapseResidenzeClienti(collapseTipoAlloggio(recordRepository.selByIdProvincia(idProvincia)));
+            }
+
+            else if (Objects.equals(idAlloggio, "ALL")){
+                list = collapseTipoAlloggio(recordRepository.selByIdResidenzaAndByIdProvincia(idResidenza, idProvincia));
+            }
+
+            else if (Objects.equals(idResidenza, "ALL")){
+                list = collapseResidenzeClienti(recordRepository.selByIdAlloggioAndByIdProvincia(idAlloggio, idProvincia));
+            }
+
+            else {
+                list = recordRepository.selByIdResidenzaAndIdAlloggioByProvincia(idResidenza, idAlloggio, idProvincia);
+            }
         }
 
         recordList = filterByTipoDatoAndReturnsRecordDto(list, tipoDato);
@@ -115,6 +152,7 @@ public class RecordServiceImpl implements IRecordService {
         }
 
     }
+
 
     // Metodi di inserimento dati
 
@@ -190,6 +228,65 @@ public class RecordServiceImpl implements IRecordService {
 
     private int timeStringToInt(String time){
         return Integer.parseInt(time.replace("-", ""));
+    }
+
+    // --
+    public List<Record> collapseResidenzeClienti(List<Record> recordList){
+        List<Record> newList = new ArrayList<>();
+        Record newR;
+
+        for(int i = 0; i < recordList.size() - 1; i++){
+            boolean flag = false;
+            for(int j = i + 1; j < recordList.size(); j++){
+                if((Objects.equals(recordList.get(i).getContesto().getTipoAlloggio().getId(), recordList.get(j).getContesto().getTipoAlloggio().getId())) &&
+                        (Objects.equals(recordList.get(i).getContesto().getProvincia().getId(), recordList.get(j).getContesto().getProvincia().getId())) &&
+                        (Objects.equals(recordList.get(i).getTime(), recordList.get(j).getTime()))){
+
+                    newR = recordList.get(i);
+                    newR.setPresenze(recordList.get(i).getPresenze() + recordList.get(j).getPresenze());
+                    newR.setArrivi(recordList.get(i).getArrivi() + recordList.get(j).getArrivi());
+                    newR.getContesto().getResidenzaClienti().setId("ALL");
+                    newR.getContesto().getResidenzaClienti().setDescrizione("ALL");
+                    newList.add(newR);
+                    recordList.remove(j);
+                    flag = true;
+                }
+            }
+            if(!flag){
+                newR = recordList.get(i);
+                newList.add(newR);
+            }
+        }
+        return newList;
+    }
+
+    public List<Record> collapseTipoAlloggio(List<Record> recordList){
+        List<Record> newList = new ArrayList<>();
+        Record newR;
+
+        for(int i = 0; i < recordList.size() - 1; i++){
+            boolean flag = false;
+            for(int j = i + 1; j < recordList.size(); j++){
+                if((Objects.equals(recordList.get(i).getContesto().getResidenzaClienti().getId(), recordList.get(j).getContesto().getResidenzaClienti().getId())) &&
+                        (Objects.equals(recordList.get(i).getContesto().getProvincia().getId(), recordList.get(j).getContesto().getProvincia().getId())) &&
+                        (Objects.equals(recordList.get(i).getTime(), recordList.get(j).getTime()))){
+
+                    newR = recordList.get(i);
+                    newR.setPresenze(recordList.get(i).getPresenze() + recordList.get(j).getPresenze());
+                    newR.setArrivi(recordList.get(i).getArrivi() + recordList.get(j).getArrivi());
+                    newR.getContesto().getTipoAlloggio().setId("ALL");
+                    newR.getContesto().getTipoAlloggio().setDescrizione("ALL");
+                    newList.add(newR);
+                    recordList.remove(j);
+                    flag = true;
+                }
+            }
+            if(!flag){
+                newR = recordList.get(i);
+                newList.add(newR);
+            }
+        }
+        return newList;
     }
 
 }

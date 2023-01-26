@@ -18,6 +18,7 @@ from skforecast.model_selection import backtesting_forecaster
 from skforecast.utils import load_forecaster
 from skforecast.utils import save_forecaster
 import os
+import json
 from xgboost import XGBRFRegressor
 
 
@@ -107,6 +108,7 @@ def testing(df: pd.DataFrame):
 
 
 if __name__ == '__main__':
+
     df = pd.read_json('./src/main/resources/fintech/dataset/dataset_con_sostituzione.json', orient='record')
     df = df.drop(['Flag Codes', 'Flags'], axis=1)
 
