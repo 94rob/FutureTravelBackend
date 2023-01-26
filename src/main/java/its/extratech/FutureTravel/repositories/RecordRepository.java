@@ -84,6 +84,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
             "ORDER BY s.TIME DESC; ", nativeQuery = true)
     List<Record> selAllOrderedByTimeDescWhereTipodatoLikeS();
 
+
     void deleteByTipoDato(char tipoDato);
 
 

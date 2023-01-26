@@ -1,16 +1,20 @@
 package its.extratech.FutureTravel.servicies.implementations;
 
 import its.extratech.FutureTravel.dtos.request.FintechRequest;
+import its.extratech.FutureTravel.dtos.response.RecordDto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoFintech;
 import its.extratech.FutureTravel.entities.*;
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.repositories.RecordRepository;
 import its.extratech.FutureTravel.servicies.interfaces.IFintechService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class FintechServiceImpl implements IFintechService {
@@ -32,6 +36,17 @@ public class FintechServiceImpl implements IFintechService {
 
     @Autowired
     RecordRepository recordRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    public List<RecordDtoFintech> getAll(){
+        List<Record> list = recordRepository.selAllOrderedByTimeDescWhereTipodatoLikeS();
+        return list.
+                stream().
+                map(this::fromRecordToRecordDtoFintech).
+                collect(Collectors.toList());
+    }
 
     @Transactional
     public void deleteOldPrevisionRecords(char tipoDato){
@@ -85,6 +100,10 @@ public class FintechServiceImpl implements IFintechService {
             time = time.substring(0, 5) + "0" + time.charAt(time.length() - 1);
         }
         return time;
+    }
+
+    private RecordDtoFintech fromRecordToRecordDtoFintech(Record record) {
+        return modelMapper.map(record, RecordDtoFintech.class);
     }
 
 }

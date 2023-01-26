@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import its.extratech.FutureTravel.dtos.request.FintechRequest;
 import its.extratech.FutureTravel.dtos.response.RecordDto;
+import its.extratech.FutureTravel.dtos.response.RecordDtoFintech;
 import its.extratech.FutureTravel.servicies.implementations.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,6 @@ public class FintechController {
     FintechServiceImpl fintechService;
 
     @Autowired
-    RecordServiceImpl recordService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @PostMapping("/upload")
@@ -33,7 +31,7 @@ public class FintechController {
 
     @GetMapping("/getall")
     public ResponseEntity<?> getAllData() throws JsonProcessingException {
-        List<RecordDto> list = recordService.getAllByTipoDato('S');
+        List<RecordDtoFintech> list = fintechService.getAll();
         return new ResponseEntity<>(objectMapper.writeValueAsString(list), HttpStatus.OK);
     }
 
