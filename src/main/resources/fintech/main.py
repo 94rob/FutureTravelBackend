@@ -26,8 +26,8 @@ def creazione_modelli(df: pd.DataFrame):
         if not os.path.exists(f'./prediction-models/{provincia}'):
             os.makedirs(f'./prediction-models/{provincia}')
         for tipo in df['TIPO_ALLOGGIO2'].unique():
-            if not os.path.exists(f'./prediction-models/{provincia}/{tipo}'):
-                os.makedirs(f'./prediction-models/{provincia}/{tipo}')
+            if not os.path.exists(f'./src/main/resources/fintech/prediction-models/{provincia}/{tipo}'):
+                os.makedirs(f'./src/main/resources/fintech/prediction-models/{provincia}/{tipo}')
             for paesi in df['ISO'].unique():
                 df_train = df[df['ITTER107'] == provincia][df['TIPO_ALLOGGIO2'] == tipo][
                     df['ISO'] == paesi][df['Indicatori'] == 'presenze'].fillna(0)
@@ -76,7 +76,7 @@ def creazione_modelli(df: pd.DataFrame):
 
                 final_forecaster.fit(df_train['Value'].astype(float))
 
-                save_forecaster(final_forecaster, file_name=f'./prediction-models/{provincia}/{tipo}/{paesi}.py', verbose=False)
+                save_forecaster(final_forecaster, file_name=f'./src/main/resources/fintech/prediction-models/{provincia}/{tipo}/{paesi}.py', verbose=False)
 
 def testing(df: pd.DataFrame):
     dict = []
@@ -90,7 +90,7 @@ def testing(df: pd.DataFrame):
 
                 df_train = df_train.set_index(pd.DatetimeIndex(df_train['TIME'], freq='MS'))
 
-                modello = load_forecaster(f'./prediction-models/{provincia}/{tipo}/{paesi}.py')
+                modello = load_forecaster(f'./src/main/resources/fintech/prediction-models/{provincia}/{tipo}/{paesi}.py')
                 pred = modello.predict(steps=24)
 
                 print(round(pred, 3))
