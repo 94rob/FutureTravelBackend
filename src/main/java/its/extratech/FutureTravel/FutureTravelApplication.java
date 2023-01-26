@@ -26,6 +26,7 @@ public class FutureTravelApplication {
 		SpringApplication.run(FutureTravelApplication.class, args);
 	}
 
+
 	@EventListener(ApplicationReadyEvent.class)
 	public void setUpData(){
 		SetUp setUp = this.setUp();
@@ -39,4 +40,6 @@ public class FutureTravelApplication {
 			System.out.println("Error occurred");
 		}
 	}
+
+
 }
