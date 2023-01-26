@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
-import java.util.Objects;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -33,12 +31,5 @@ public class Contesto {
 
     @OneToMany(mappedBy = "contesto", fetch = FetchType.LAZY)
     public List<Record> records;
-
-
-    public boolean equalsTo(Contesto c){
-        return ((Objects.equals(c.getProvincia().getId(), provincia.getId())) &&
-                (Objects.equals(c.getResidenzaClienti().getId(), residenzaClienti.getId())) &&
-                (Objects.equals(c.getTipoAlloggio().getId(), tipoAlloggio.getId())));
-    }
 
 }

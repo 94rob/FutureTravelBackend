@@ -19,13 +19,13 @@ public class SetUp {
 
     public boolean updateDataFromIstat() throws IOException {
 
-        String lastdate = this.recordService.getLastDateRegisteredInIstatData();
+        String lastdate = this.recordService.getLastDateRegistered();
         if(lastdate.isBlank()){
             lastdate = "2000-01";
         }
 
         System.out.println("Aggiorno il database con i dati Istat successivi alla data: " + lastdate);
-        return recordService.fetch(considerNextMonth(lastdate));
+        return recordService.fetchIstatApiAndSaveData(considerNextMonth(lastdate));
     }
 
     public void updatePredictionModels() throws IOException {
@@ -34,7 +34,7 @@ public class SetUp {
         this.fintechService.deleteOldPrevisionRecords('P');
 
         // Eseguo il file python
-        File file = new File("./src/main/resources/fintech/testing.py");
+        File file = new File("./src/main/resources/fintech/main.py");
         ProcessBuilder processBuilder = new ProcessBuilder("py", file.getAbsolutePath());
         processBuilder.redirectErrorStream(true);
 
@@ -43,6 +43,7 @@ public class SetUp {
         System.out.println(this.readProcessOutput(process.getInputStream()));
     }
 
+    // per evitare dati duplicati nel database, considero il mese successivo all'ultimo registrato
     public String considerNextMonth(String date){
         String month = String.valueOf(date.charAt(date.length() - 2)) +
                 date.charAt(date.length() - 1);

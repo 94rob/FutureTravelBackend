@@ -19,7 +19,7 @@ def testing(df: pd.DataFrame):
 
                 df_train = df_train.set_index(pd.DatetimeIndex(df_train['TIME'], freq='MS'))
 
-                modello = load_forecaster(f'./{provincia}/{tipo}/{paesi}.py')
+                modello = load_forecaster(f'./src/main/resources/fintech/prediction-models/{provincia}/{tipo}/{paesi}.py')
                 pred = modello.predict(steps=24)
 
                 # plt.figure(figsize=(12, 8))
@@ -46,12 +46,6 @@ if __name__ == '__main__':
     df = df.drop(['Flag Codes', 'Flags'], axis=1)
 
     dict = testing(df)
-
-    # str = json.dump(dict)
-    # file = open("./prova.json", "w")
-    # file.write(str)
-    # file.close()
-
 
     url = 'http://localhost:8085/gruppo8/fintech/upload'
 

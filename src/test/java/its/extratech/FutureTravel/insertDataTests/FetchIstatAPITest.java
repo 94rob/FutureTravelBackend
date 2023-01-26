@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import its.extratech.FutureTravel.entities.Record;
 import its.extratech.FutureTravel.fetchIstatData.*;
+import its.extratech.FutureTravel.fetchIstatData.istatXmlObjects.Obs;
+import its.extratech.FutureTravel.fetchIstatData.istatXmlObjects.Series;
+import its.extratech.FutureTravel.fetchIstatData.istatXmlObjects.SeriesKey;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.w3c.dom.Document;
@@ -18,9 +21,10 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FetchIstatAPITest {
 
+
+
     private XMLIstatReader xmlIstatReader = new XMLIstatReader();
-    private String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/M.551_553.N.IT.ITF31.TOT.HOTELLIKE.NI.../?";
-    private ImportDataUtils importDataUtils = new ImportDataUtils();
+    private final String url = "http://sdmx.istat.it/SDMXWS/rest/data/122_54/M.551_553.N.IT.ITF31.TOT.HOTELLIKE.NI.../?";
 
     @Test
     @Order(1)
@@ -31,7 +35,7 @@ public class FetchIstatAPITest {
     @Test
     @Order(2)
     public void testFetchIstatApiReturnsString(){
-        assertThat(xmlIstatReader.fetchIstatApi(url))
+        assertThat(xmlIstatReader.sendHttpRequest(url))
                 .isInstanceOf(String.class);
     }
 
@@ -66,34 +70,29 @@ public class FetchIstatAPITest {
     @Test
     @Order(3)
     public void testFromStringToXMLDocumentReturnsDocument() throws IOException {
-        assertThat(this.importDataUtils.fromStringToXMLDocument(xmlString))
+        assertThat(this.xmlIstatReader.fromStringToXMLDocument(xmlString))
                 .isInstanceOf(Document.class);
     }
 
     Document doc;
 
-    {
-        try {
-            doc = this.importDataUtils.fromStringToXMLDocument(xmlString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    {doc = this.xmlIstatReader.fromStringToXMLDocument(xmlString);}
+
 
     @Test
     @Order(4)
     public void testGetSeriesReturnsListOfSeries(){
-        assertThat(this.xmlIstatReader.getSeries(doc).get(0))
+        assertThat(this.xmlIstatReader.getSeriesFromDocument(doc).get(0))
                 .isInstanceOf(Series.class);
     }
 
     @Test
     @Order(5)
     public void testGetSeriesReturnsListOfSize1(){
-        assertEquals(1, this.xmlIstatReader.getSeries(doc).size());
+        assertEquals(1, this.xmlIstatReader.getSeriesFromDocument(doc).size());
     }
 
-    public Series series = this.xmlIstatReader.getSeries(doc).get(0);
+    public Series series = this.xmlIstatReader.getSeriesFromDocument(doc).get(0);
 
     @Test
     @Order(6)
@@ -116,11 +115,11 @@ public class FetchIstatAPITest {
     @Test
     @Order(7)
     public void testSeriesToRecordListReturnsRecordList(){
-        assertThat(this.importDataUtils.fromSeriesToRecordList(series).get(0))
+        assertThat(this.xmlIstatReader.fromSeriesToRecordList(series).get(0))
                 .isInstanceOf(Record.class);
     }
 
-    public List<Record> recordList = this.importDataUtils.fromSeriesToRecordList(series);
+    public List<Record> recordList = this.xmlIstatReader.fromSeriesToRecordList(series);
 
     @Test
     @Order(8)
@@ -184,8 +183,8 @@ public class FetchIstatAPITest {
         seriesPresenze.setObsList(presenzeObsList);
     }
 
-    List<Record> arriviRecordList = this.importDataUtils.fromSeriesToRecordList(seriesArrivi);
-    List<Record> presenzeRecordList = this.importDataUtils.fromSeriesToRecordList(seriesPresenze);
+    List<Record> arriviRecordList = this.xmlIstatReader.fromSeriesToRecordList(seriesArrivi);
+    List<Record> presenzeRecordList = this.xmlIstatReader.fromSeriesToRecordList(seriesPresenze);
 
     @Test
     @Order(10)
